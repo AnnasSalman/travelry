@@ -1,19 +1,38 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
-  );
+import MainTabNavigation from './src/navigation/MainTabNavigation';
+import * as Font from 'expo-font'
+import { AppLoading } from 'expo'
+
+const fetchFonts = async() => {
+
+  await Font.loadAsync(
+      {
+         'the-bold-font': require('./assets/fonts/theboldfont.ttf'),
+         'roboto-medium': require('./assets/fonts/Roboto/Roboto-Medium.ttf'),
+         'roboto-regular': require('./assets/fonts/Roboto/Roboto-Regular.ttf'),
+          'poppins-regular': require('./assets/fonts/Poppins/Poppins-Regular.ttf'),
+          'poppins-medium': require('./assets/fonts/Poppins/Poppins-Medium.ttf')
+      }
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+
+  const [dataLoaded, setDataLoaded] = useState(false)
+
+  if(!dataLoaded){
+    return <AppLoading
+        startAsync={fetchFonts}
+        onFinish={()=> {
+            setDataLoaded(true)
+            console.log('loadeddd')
+        }}
+        onError={(err)=>console.log(err)}/>
+  }
+
+  fetchFonts()
+  return <MainTabNavigation/>
+}
+

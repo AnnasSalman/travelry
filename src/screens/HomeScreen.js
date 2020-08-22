@@ -20,15 +20,15 @@ const HomeScreen = props => {
                 <ImageBackground source={image} style={styles.backgroundImage}>
                     <View style={styles.messageView}>
                         <Text style={styles.message}>
-                            Do not miss the{"\n"}
+                            Explore the{"\n"}
                             wonders of Pakistan
                         </Text>
                         <Text style={{...styles.message, fontSize: 16}}>
-                            Plan complete tours, manage Bookings and more
+                            Plan complete tours, manage Bookings, explore places and more
                         </Text>
                     </View>
                 </ImageBackground>
-                <SearchPanel/>
+                <SearchPanel onRoomPress={()=>props.navigation.navigate('room')}/>
             </View>
         )
 }

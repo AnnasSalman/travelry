@@ -19,6 +19,11 @@ const{ height } = Dimensions.get('window')
 
 class SearchPanel extends React.Component{
 
+    constructor(props) {
+        super(props);
+
+    }
+
     componentDidMount = () => {
         if(true) {
             this.keyboardDidShowListener = Keyboard.addListener(
@@ -55,12 +60,12 @@ class SearchPanel extends React.Component{
         return (
             <SlidingUpPanel
                 ref = {c => this._panel = c}
-                draggableRange={{top: height*0.9, bottom: height * 0.35}}
-                animatedValue={new Animated.Value(height * 0.35)}
-                snappingPoints={[height * 0.25, height]}
+                draggableRange={{top: height*0.9, bottom: height * 0.42}}
+                animatedValue={new Animated.Value(height * 0.42)}
+                snappingPoints={[height * 0.42, height]}
                 backdropOpacity={1.0}
                 backdropStyle={{backgroundColor: 'black', opacity: 0.5}}
-                minimumVelocityThreshold = {0.6}>
+                minimumVelocityThreshold = {0.8}>
                 <View style={styles.slideUp}>
                     <TouchableWithoutFeedback onPress={()=>this._panel.show()}>
                         <View style={styles.notch}>
@@ -90,7 +95,8 @@ class SearchPanel extends React.Component{
                                 </SearchIconButton>
                                 <SearchIconButton
                                     icon="star-outline"
-                                    >Favorites
+                                    onPress={this.props.onRoomPress}
+                                    >Rooms
                                 </SearchIconButton>
                             </View>
                         </View>
@@ -149,12 +155,11 @@ const styles = StyleSheet.create({
         color: Colors.DarkTheme.onSurface,
     },
     panelHeader: {
-        backgroundColor: Colors.DarkTheme.background,
-        opacity: 0.7
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
     },
     panelBody: {
-        backgroundColor: Colors.DarkTheme.background,
         flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
     }
 });
 //

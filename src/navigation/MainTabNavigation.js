@@ -23,7 +23,7 @@ const tabScreenConfig = {
                     <Ionicons name="ios-home" size={25} color={tabInfo.tintColor} />
                 );
             },
-            tabBarColor: Colors.DarkTheme.surface,
+            tabBarColor: 'rgba(0,0,0,0.0)',
         }
     },
     Tours: {
@@ -51,31 +51,30 @@ const tabScreenConfig = {
             tabBarIcon: tabInfo => {
                 return <Ionicons name="ios-chatbubbles" size={25} color={tabInfo.tintColor} />;
             },
-            tabBarColor: Colors.DefaultTheme.primary
+            tabBarColor: 'red'
         }
     }
 };
 
-
-
 const MainTabNavigation =
-    Platform.OS === 'android'
-        ? createMaterialBottomTabNavigator(tabScreenConfig, {
-            activeTintColor: 'white',
-            shifting: true,
+    // Platform.OS === 'android' ?
+        createMaterialBottomTabNavigator(tabScreenConfig, {
             barStyle: {
-                backgroundColor: Colors.DarkTheme.surface
+                position: 'absolute',
+                backgroundColor: 'rgba(0,0,0,0.0)',
+                borderTopWidth: 0,
             },
+            activeTintColor: 'white',
         })
-        : createBottomTabNavigator(tabScreenConfig, {
-            tabBarOptions: {
-                activeTintColor: Colors.DefaultTheme.secondary,
-                inactiveBackgroundColor: Colors.DarkTheme.surface,
-                style: {
-                    backgroundColor: 'black',
-                    opacity: 0.7
-                }
-            }
-        });
+        // : createBottomTabNavigator(tabScreenConfig, {
+        //     tabBarOptions: {
+        //         activeTintColor: Colors.DefaultTheme.secondary,
+        //         inactiveBackgroundColor: Colors.DarkTheme.surface,
+        //         style: {
+        //             backgroundColor: 'black',
+        //             opacity: 0.7
+        //         }
+        //     }
+        // });
 
 export default createAppContainer(MainTabNavigation);

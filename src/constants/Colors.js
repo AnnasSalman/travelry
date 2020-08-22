@@ -25,6 +25,13 @@ const Colors = {
         onBackground: '#000000',
         onSurface: '#000000',
         onError: '#FFFFFF'
+    },
+    ForestBiome:{
+        primary: '#F65058',
+        primaryVariant: '#5CDB95',
+        secondary: '#FBDE44FF',
+        background: '#28334A',
+        backgroundVariant: '#101820'
     }
 }
 

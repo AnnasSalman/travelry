@@ -1,9 +1,16 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import axios from 'axios'
 import MainTabNavigation from './src/navigation/MainTabNavigation';
 import * as Font from 'expo-font'
 import { AppLoading } from 'expo'
+import Constants from "expo-constants";
+import {uri} from "./src/constants/Addresses";
+
+const { manifest } = Constants;
+
+axios.defaults.baseURL = uri;
 
 const fetchFonts = async() => {
 

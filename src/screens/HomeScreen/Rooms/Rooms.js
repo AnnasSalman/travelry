@@ -9,6 +9,7 @@ import Room from "../../../models/Rooms";
 import RoomCard from "../../../components/molecules/RoomCard/RoomCard";
 import {uri} from "../../../constants/Addresses";
 import Loading from "../../../components/atoms/Loading/Loading";
+import DropdownAlert from "react-native-dropdownalert";
 
 const baseURI= uri
 const {width, height} = Dimensions.get('window')
@@ -19,29 +20,40 @@ tomorrow.setDate(tomorrow.getDate()+1)
 const Rooms = props => {
 
     const filterPanel = useRef(null)
+    const alert = useRef(null)
 
     const [roomState, setroomState] = useState([])
     const [filterApplied, setfilterApplied] = useState(false)
     const [loading, setloading] = useState(false)
+    const [filter, setfilter] = useState({})
+    const [animatedValue] = useState(new Animated.Value(0));
 
     useEffect(()=>{
         setloading(true)
         onFilterApply({guests: 1, startDate: today, endDate: tomorrow, from: 0, to: 100000})
         setloading(false)
     },[])
+    useEffect(()=>{
+        if(filterApplied){
+            const text='Found '+roomState.length+' Rooms '
+            const text2 = 'that allow at least '+filter.guests+
+                ' guests between the price limit '+filter.from+' to '+filter.to+' during '+filter.startDate.substring(0,10)+' & '+filter.endDate.substring(0,10)
+            alert.current.alertWithType('custom',text,text2)
+        }
+    },[filter])
 
     const onFilterApply = async ({guests, startDate, endDate, from, to}) => {
+        setfilter({guests, startDate, endDate, from, to})
         setloading(true)
         const rooms = new Room()
         try{
             const roomsResponse = await rooms.requestRooms(guests, from, to, startDate, endDate)
-            console.log(roomsResponse.length)
             setroomState(roomsResponse)
             setTimeout(()=>{
                 filterPanel.current.hide()
             }, 400)
             setloading(false)
-        }
+            }
         catch(e){
             console.log(e)
             setloading(false)
@@ -58,7 +70,7 @@ const Rooms = props => {
                     size={30}
                     onPress={() => props.navigation.navigate('Home')}
                 />
-                <Text style={styles.text}>Found 4 Rooms Near you</Text>
+                <Text style={styles.text}>Available Rooms</Text>
                 <IconButton
                     icon='filter-variant'
                     color={Colors.ForestBiome.secondary}
@@ -81,6 +93,9 @@ const Rooms = props => {
                                 {uri: baseURI + '/hotels/room/images/'+item.hotelid+'-'+item.roomInfo.key+'-cover'+'.jpg'}:
                                 null
                             }
+                            onPress={()=>{
+                                props.navigation.navigate('roomScreen', {item, filter})
+                            }}
                         />
                     )}
                     keyExtractor={item => item.roomInfo.key}
@@ -92,8 +107,17 @@ const Rooms = props => {
             <SlidingUpPanel
                 ref={filterPanel} allowDragging={false}
             >
-                <FilterPanel onClose={() => filterPanel.current.hide()} onSubmit={(val) => onFilterApply(val)} loading={loading}/>
+                <FilterPanel
+                    animatedValue={animatedValue}
+                    onClose={() => filterPanel.current.hide()}
+                    onSubmit={(val) => {
+                        setfilterApplied(true)
+                        onFilterApply(val)
+                    }}
+                    loading={loading}
+                />
             </SlidingUpPanel>
+            <DropdownAlert ref={alert} containerStyle={styles.alert} titleStyle={{color: Colors.ForestBiome.secondary, fontSize: 18}}/>
         </View>
     )
     }
@@ -137,6 +161,23 @@ const styles = StyleSheet.create({
         left: 0,
         bottom: 0,
         width: width
+    },
+    criteria: {
+        margin: 10,
+        marginTop: 0,
+        marginHorizontal: 20,
+        alignItems: 'center'
+    },
+    desc: {
+        color: 'grey',
+        fontSize: 12
+    },
+    alert: {
+        padding: 16,
+        flexDirection: 'row',
+        backgroundColor: Colors.ForestBiome.background,
+        borderBottomRightRadius: 25,
+        borderBottomLeftRadius: 25
     }
 })
 

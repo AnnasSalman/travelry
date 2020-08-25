@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
-import {Text, View, StyleSheet, Dimensions, ImageBackground} from 'react-native'
+import {Text, View, StyleSheet, Dimensions, ImageBackground, TouchableOpacity} from 'react-native'
 import Colors from "../../../constants/Colors";
-import { Rating, AirbnbRating } from 'react-native-ratings';
+import { Rating} from 'react-native-ratings';
 import Loading from "../../atoms/Loading/Loading";
 
 const {height, width} = Dimensions.get('window')
@@ -11,6 +11,7 @@ const RoomCard = props => {
     const [loading, setloading] = useState(false)
 
     return(
+        <TouchableOpacity onPress={props.onPress}>
         <View style={styles.container}>
             <ImageBackground
                 style={styles.picture}
@@ -41,6 +42,7 @@ const RoomCard = props => {
                 />
             </View>
         </View>
+        </TouchableOpacity>
     )
 }
 

@@ -9,10 +9,12 @@ import {
     Dimensions,
     TouchableWithoutFeedback,
     Platform,
-    KeyboardAvoidingView} from 'react-native'
+    KeyboardAvoidingView,
+} from 'react-native'
 
 import SlidingUpPanel from "rn-sliding-up-panel";
 import { Searchbar, IconButton } from "react-native-paper";
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import SearchIconButton from "../../atoms/SearchIconButton";
 import Colors from '../../../constants/Colors'
 const{ height } = Dimensions.get('window')
@@ -75,22 +77,32 @@ class SearchPanel extends React.Component{
                     <View style={styles.panelHeader}>
                         <View style={styles.searchBar}>
                             <Text style={styles.title}>Discover</Text>
-                            <Searchbar
-                                placeholder='Enter a location'
-                                icon='map-marker'
-                            />
+                            <TouchableWithoutFeedback onPress={this.props.onSearchPress}>
+                                <View style={styles.searchBox}>
+                                    <Icon
+                                        name='add-location'
+                                        size={25}
+                                        color={'grey'}
+                                        style={styles.icon}
+                                    />
+                                    <Text style={styles.text}>{this.props.searchBarText}</Text>
+                                </View>
+                            </TouchableWithoutFeedback>
                             <Text style={styles.subHeading}>What would you like to find?</Text>
                             <View style={styles.buttonGroup}>
                                 <SearchIconButton
                                     icon="biathlon"
+                                    onPress={this.props.onTourPress}
                                 >Tours
                                 </SearchIconButton>
                                 <SearchIconButton
                                     icon="city-variant-outline"
+                                    onPress={this.props.onHotelPress}
                                 >Hotels
                                 </SearchIconButton>
                                 <SearchIconButton
                                     icon="pine-tree"
+                                    onPress={this.props.onPlacePress}
                                     >Places
                                 </SearchIconButton>
                                 <SearchIconButton
@@ -135,6 +147,15 @@ const styles = StyleSheet.create({
         marginRight: 30,
         marginBottom: 15,
     },
+    searchBox: {
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        height: height*0.065,
+        borderRadius: 5,
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: 'black'
+    },
     title: {
         fontFamily: 'the-bold-font',
         fontSize: 35,
@@ -155,11 +176,18 @@ const styles = StyleSheet.create({
         color: Colors.DarkTheme.onSurface,
     },
     panelHeader: {
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        backgroundColor: 'rgba(0, 0, 0, 0.95)',
     },
     panelBody: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        backgroundColor: 'rgba(0, 0, 0, 0.95)',
+    },
+    text: {
+        color: 'grey',
+        margin: 10
+    },
+    icon: {
+        margin: 10
     }
 });
 //

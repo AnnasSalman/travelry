@@ -44,8 +44,18 @@ const NumberOfRooms = props => {
         }
     }
 
-    const onConfirmBooking = () => {
-        alert.current.alertWithType('custom','Booking Successful', 'Your Rooms are reserved')
+    const onConfirmBooking = async() => {
+        const recieved = (props.navigation.state.params)
+        try{
+            const booking = new Booking(recieved.room.hotelid, recieved.room.roomInfo.key, rooms, recieved.startDate, recieved.endDate)
+            const availability = await booking.checkAvailability()
+            const booked = await booking.bookRooms()
+            alert.current.alertWithType('custom','Booking Successful', 'Your Rooms are reserved')
+        }
+        catch(e){
+            alert.current.alertWithType('error','Booking Failed', 'Check Your Internet connection or maybe someone else booked the room')
+
+        }
         setTimeout(()=>{
             props.navigation.navigate('roomScreen')
         },4000)

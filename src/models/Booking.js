@@ -20,11 +20,27 @@ class Booking {
                     to: this._to
                 }
             })
+            this._rooms = availability.data.rooms
             return availability.data
         }
         catch(e){
             return(e)
         }
+    }
+
+    bookRooms = async () => {
+        try{
+            const booking = axios.post('/bookings/rooms/book', {
+                roomSpecificIds: this._rooms,
+                from: this._from,
+                to: this._to
+            })
+            return booking
+        }
+        catch(e){
+            return e
+        }
+
     }
 
 

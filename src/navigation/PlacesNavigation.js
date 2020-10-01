@@ -3,6 +3,7 @@ import { createAppContainer} from "react-navigation";
 
 import Places from "../screens/HomeScreen/Places/Places";
 import MapPlaces from "../screens/HomeScreen/MapPlaces/MapPlaces";
+import Place from "../screens/HomeScreen/Place/Place";
 
 const PlacesNavigation = createStackNavigator({
         placesScreen: {
@@ -10,7 +11,14 @@ const PlacesNavigation = createStackNavigator({
         },
         mapScreen: {
             screen: MapPlaces
-        }
+        },
+        placeScreen: {
+            screen: Place,
+            navigationOptions: {
+                ...TransitionPresets.ModalTransition
+            }
+        },
+
     },
     {
         defaultNavigationOptions: {

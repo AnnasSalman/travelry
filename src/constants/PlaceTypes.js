@@ -2,14 +2,41 @@ const PlaceTypes = {
     parksAndRecreation: [
         [
             {
+                key: 'park',
+                name: 'Parks',
+                image: require('../../assets/placeassets/park.jpg'),
+                marker: require('../../assets/placemarkers/park.png')
+            },
+            {
+                key: 'hiking trails',
+                name: 'Hiking Trails',
+                image: require('../../assets/placeassets/hikingTrails.jpg'),
+                textSearch: true
+            },
+
+        ],
+        [
+            {
+                key: 'campground',
+                name: 'Camp Grounds',
+                image: require('../../assets/placeassets/campGrounds.jpg'),
+            },
+            {
+                key: 'tourist_attraction',
+                name: 'Tourist Attractions',
+                image: require('../../assets/placeassets/touristattraction.jpg')
+            },
+        ],
+        [
+            {
                 key: 'amusement_park',
                 name: 'Amusement Parks',
                 image: require('../../assets/placeassets/amusementPark.jpg')
             },
             {
-                key: 'art_gallery',
-                name: 'Art Galleries',
-                image: require('../../assets/placeassets/artGallery.jpg')
+                key: 'movie_theater',
+                name: 'Movie Theaters',
+                image: require('../../assets/placeassets/movieTheater.jpg')
             },
             {
                 key: 'bowling_alley',
@@ -19,28 +46,16 @@ const PlaceTypes = {
         ],
         [
             {
-                key: 'campground',
-                name: 'Camp Grounds',
-                image: require('../../assets/placeassets/campGrounds.jpg')
+                key: 'art_gallery',
+                name: 'Art Galleries',
+                image: require('../../assets/placeassets/artGallery.jpg')
             },
-            {
-                key: 'movie_theater',
-                name: 'Movie Theaters',
-                image: require('../../assets/placeassets/movieTheater.jpg')
-            }
-        ],
-        [
             {
                 key: 'museum',
                 name: 'Museums',
                 image: require('../../assets/placeassets/museum.jpg')
             },
-            {
-                key: 'park',
-                name: 'Parks',
-                image: require('../../assets/placeassets/park.jpg'),
-                marker: require('../../assets/placemarkers/park.png')
-            },
+
         ],
         [
             {
@@ -55,11 +70,6 @@ const PlaceTypes = {
                 name: 'Stadiums',
                 image: require('../../assets/placeassets/stadium.jpg')
 
-            },
-            {
-                key: 'tourist_attraction',
-                name: 'Tourist Attractions',
-                image: require('../../assets/placeassets/touristattraction.jpg')
             },
             {
                 key: 'zoo',

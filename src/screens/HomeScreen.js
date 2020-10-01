@@ -88,6 +88,18 @@ const HomeScreen = props => {
         }
     }
 
+    const locationSubtitle = () => {
+        if(fullLocation && fullLocation.formatted_address){
+            return fullLocation.formatted_address
+        }
+        else if(fullLocation && fullLocation.vicinity){
+            return fullLocation.vicinity
+        }
+        else{
+            return null
+        }
+    }
+
         return (
             <View style={styles.container}>
                 <ImageBackground source={background} style={styles.backgroundImage}>
@@ -104,10 +116,13 @@ const HomeScreen = props => {
                                     <Text style={styles.message}>
                                         {loc}
                                     </Text>
-                                    <ReviewCarousel
-                                        textStyle={{...styles.message, fontSize: 13}}
-                                        data={reviews}
-                                    />
+                                    <Text style={styles.messageSmall}>
+                                        {locationSubtitle()}
+                                    </Text>
+                                    {/*<ReviewCarousel*/}
+                                    {/*    textStyle={{...styles.message, fontSize: 13}}*/}
+                                    {/*    data={reviews}*/}
+                                    {/*/>*/}
                                 </View> :
                                 <View>
                                     <Text style={styles.message}>
@@ -153,8 +168,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         fontFamily: 'poppins-medium',
         marginLeft: 20,
-        marginBottom: 45,
-        width: width*0.9
+        marginBottom: 0,
+        width: width*0.75
     },
     message: {
         fontFamily: 'roboto-medium',
@@ -162,6 +177,13 @@ const styles = StyleSheet.create({
         fontSize: 24,
         textShadowColor: Colors.DarkTheme.background,
         textShadowRadius: 4
+    },
+    messageSmall:{
+        fontFamily: 'poppins-medium',
+        color: 'grey',
+        fontSize: 13,
+        textShadowColor: Colors.DarkTheme.background,
+        textShadowRadius: 4,
     }
 })
 

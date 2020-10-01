@@ -62,8 +62,8 @@ class SearchPanel extends React.Component{
         return (
             <SlidingUpPanel
                 ref = {c => this._panel = c}
-                draggableRange={{top: height*0.9, bottom: height * 0.42}}
-                animatedValue={new Animated.Value(height * 0.42)}
+                draggableRange={{top: height*0.9, bottom: height * 0.43}}
+                animatedValue={new Animated.Value(height * 0.43)}
                 snappingPoints={[height * 0.42, height]}
                 backdropOpacity={1.0}
                 backdropStyle={{backgroundColor: 'black', opacity: 0.5}}

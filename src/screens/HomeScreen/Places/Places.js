@@ -58,6 +58,7 @@ const Places = props => {
     }
 
     const typeSelectHandler = async(item) => {
+        console.log(item)
         const key = item.key
         const name = item.name
         const marker = item.marker
@@ -68,8 +69,23 @@ const Places = props => {
                 locationName: location.name,
                 address: location.formatted_address,
                 typeName: name,
-                typeKey: key
+                typeKey: key,
+                textSearch: item.textSearch?true:false
             })
+    }
+
+    const searchHandler = (event) => {
+        const searchText = event.nativeEvent.text
+        props.navigation.navigate('mapScreen',
+            {
+                coordinates: location.geometry.location,
+                locationName: location.name,
+                address: location.formatted_address,
+                typeName: searchText.toUpperCase(),
+                typeKey: searchText,
+                textSearch: true
+            })
+
     }
 
     return(
@@ -105,6 +121,7 @@ const Places = props => {
                 value={searchQuery}
                 style={styles.searchBar}
                 inputStyle={styles.searchBarTextStyles}
+                onSubmitEditing={(event)=>searchHandler(event)}
             />
             <ScrollView style={styles.scrollView}>
                 <View style={styles.category}>

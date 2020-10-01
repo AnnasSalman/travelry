@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react'
 import {View, Text, StyleSheet, Dimensions} from 'react-native'
+import {IconButton, Button} from 'react-native-paper'
 import MapView, {Marker, Circle, PROVIDER_GOOGLE, Callout} from "react-native-maps";
 import Places from "../Places/Places";
 import Carousel from "react-native-snap-carousel/src/carousel/Carousel";
@@ -9,11 +10,12 @@ import CustomHeader from "../../../components/atoms/CustomHeader/CustomHeader";
 import NearbyPlaces from "../../../models/NearbyPlaces";
 import { OpenMapDirections } from 'react-native-navigation-directions';
 import {showLocation} from "react-native-map-link";
+import Loading from "../../../components/atoms/Loading/Loading";
 
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.014;
+const LATITUDE_DELTA = 0.010;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const MapPlaces = props => {
@@ -25,20 +27,23 @@ const MapPlaces = props => {
     const [nearby, setNearby] = useState([])
     const [images, setImages] = useState([])
     const [imageLoading, setImageLoading] = useState(false)
+    const [placesLoading, setPlacesLoading] = useState(true)
+    const [placeUnavailable, setPlaceUnavailable] = useState(false)
 
     useEffect(()=>{
+        setPlacesLoading(true)
         try{
-            console.log('EFFECT CALLED')
             getNearbyPlaces()
+            setPlacesLoading(false)
         }
         catch(e){
+            setPlacesLoading(false)
             console.log('ERROR FETCHING NEARBY')
         }
     },[])
 
     useEffect(()=>{
         try{
-            console.log('EFFECT 2 CALLED')
             getPlaceImages(nearby)
         }
         catch(e){
@@ -50,8 +55,14 @@ const MapPlaces = props => {
         const navData = props.navigation.state.params
         try{
             const nearbyPlaces =
-                new NearbyPlaces(navData.coordinates.lat+','+navData.coordinates.lng, navData.typeKey, 1500)
+                new NearbyPlaces(navData.coordinates.lat+','+navData.coordinates.lng, navData.typeKey, navData.textSearch, 2500)
             const nearbyPlacesArray = await nearbyPlaces.getNearbyPlaces()
+            if(nearbyPlacesArray.length===0){
+                setPlaceUnavailable(true)
+            }
+            else{
+                setPlaceUnavailable(false)
+            }
             setNearby(nearbyPlacesArray)
             _map.current.animateToRegion({
                 latitude: nearbyPlacesArray[0].geometry.location.lat,
@@ -120,17 +131,26 @@ const MapPlaces = props => {
         // });
     }
 
+    const cardPressHandler = (item, image) => {
+        props.navigation.navigate('placeScreen', {...item, image})
+    }
+
     const _renderItem = ({item, index}) => {
         return (
             <PlaceCard
+                currentLat={props.navigation.state.params.coordinates.lat}
+                currentLng={props.navigation.state.params.coordinates.lng}
+                locationLat={item.geometry.location.lat}
+                locationLng={item.geometry.location.lng}
                 cardStyle={styles.cardStyle}
                 title={item.name}
                 rating={item.rating}
-                vicinity={item.vicinity}
+                vicinity={item.vicinity?item.vicinity:null}
                 total={nearby.length}
                 index={index}
                 image={images[index]}
                 onDirectionsPress={()=>directionsHandler(index)}
+                onPress={()=>cardPressHandler(item, images[index])}
                 icon={item.icon}
                 imageLoading={imageLoading}
             />
@@ -220,6 +240,32 @@ const MapPlaces = props => {
                 subtitleStyle={styles.subtitle}
                 onBack={()=>props.navigation.goBack()}
             />
+            {
+                placeUnavailable?
+                    <View style={styles.alert}>
+                        <IconButton
+                            icon='alert-circle'
+                            color={Colors.ForestBiome.background}
+                            size={40}
+                        />
+                        <Text style={styles.alertText}>No {props.navigation.state.params.typeName} found</Text>
+                        <Button
+                            icon="chevron-left"
+                            mode="contained"
+                            color={Colors.ForestBiome.background}
+                            onPress={() => props.navigation.goBack()}>
+                            Try Another Place
+                        </Button>
+                    </View>:
+                    null
+            }
+            {
+                placesLoading?
+                    <View style={styles.loadingView}>
+                        <Loading type={'Fold'} animating={true} color={Colors.ForestBiome.primary}/>
+                    </View>
+                    : null
+            }
             <Carousel
                 ref={_carousel}
                 data={nearby}
@@ -254,7 +300,7 @@ const styles = StyleSheet.create({
     navBar: {
         height: height*0.07,
         width: width,
-        backgroundColor: 'rgba(40, 51, 74, 0.9)',
+        backgroundColor: 'rgba(40, 51, 74, 0.6)',
         position: 'absolute',
         bottom: 0,
         left: 0,
@@ -276,6 +322,33 @@ const styles = StyleSheet.create({
         color: 'grey',
         fontFamily: 'poppins-regular'
         // color: Colors.ForestBiome.primary
+    },
+    alert: {
+        height: '28%',
+        opacity:0.9,
+        width: '100%',
+        backgroundColor: Colors.ForestBiome.primary,
+        position: 'absolute',
+        bottom: 0,
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
+        alignItems: 'center',
+    },
+    row: {
+        flexDirection: 'row',
+    },
+    alertText: {
+        fontSize: 20,
+        fontFamily: 'poppins-medium',
+        color: Colors.ForestBiome.background
+    },
+    loadingView: {
+        position: 'absolute',
+        left: 0,
+        top: 50,
+        width: 100,
+        alignItems: 'center',
+        backgroundColor: 'yellow'
     }
 })
 

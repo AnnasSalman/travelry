@@ -16,7 +16,19 @@ const bestHeight = (elements) => {
 }
 
 const randomImage = (elements) => {
-    return Math.floor(Math.random() * elements.length);
+    const images = []
+    elements.forEach((image, index)=>{
+        if(image.height>650){
+            images.push(index)
+        }
+    })
+    if(images.length>1){
+        const index = Math.floor(Math.random() * elements.length);
+        return images[index]
+    }
+    else{
+        return Math.floor(Math.random() * elements.length);
+    }
 }
 
 class Location {
@@ -29,7 +41,7 @@ class Location {
             await AsyncStorage.setItem('location', jsonValue)
             if(value.photos){
                 //best height image index
-                // const bestIndex = bestHeight(value.photos)
+                //const bestIndex = bestHeight(value.photos)
                 //random image index
                 const bestIndex = randomImage(value.photos)
                 const pic = await axios.request({

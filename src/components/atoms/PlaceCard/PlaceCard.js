@@ -5,10 +5,71 @@ import {Rating} from 'react-native-ratings'
 import {IconButton} from "react-native-paper";
 import Loading from "../Loading/Loading";
 
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1);
+    var a =
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon/2) * Math.sin(dLon/2)
+    ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // Distance in km
+    return d;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI/180)
+}
+
+const closeness = (lat1, lon1, lat2, lon2) => {
+    const distance = getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2)
+    if(distance<0.2){
+        return(
+            <Text style={styles.close}>Short Walk</Text>
+        )
+    }
+    else if(distance<0.4){
+        return(
+            <Text style={styles.normal}>Normal Walk</Text>
+        )
+    }
+    else if(distance<0.6){
+        return(
+            <Text style={styles.far}>Long Walk</Text>
+        )
+    }
+    else if(distance<2.3){
+        return(
+            <Text style={styles.close}>Short Drive</Text>
+        )
+    }
+    else if(distance<5){
+        return(
+            <Text style={styles.normal}>Normal Drive</Text>
+        )
+    }
+    else if(distance<10){
+        return(
+            <Text style={styles.far}>Long Drive</Text>
+        )
+    }
+    else if(distance<22){
+        return(
+            <Text style={styles.far}>A Day Trip</Text>
+        )
+    }
+    else {
+        return(
+            <Text style={styles.far}>Quite Far</Text>
+        )
+    }
+
+}
 
 const PlaceCard = props => {
 
-    console.log(props.image)
     const titleFontSizeDetect = () => {
         if(props.title.length<=11){
             return {
@@ -28,32 +89,54 @@ const PlaceCard = props => {
     }
 
     const subtitleFontSizeDetect = () => {
-        if(props.vicinity.length>22){
-            return {fontSize: 10}
+        if(props.vicinity){
+            if(props.vicinity.length>22){
+                return {fontSize: 10}
+            }
+            else{
+                return {fontSize: 12}
+            }
         }
         else{
-            return {fontSize: 12}
+            return null
         }
 
     }
 
 
     return(
+        <TouchableOpacity onPress={props.onPress}>
         <View style={{...props.cardStyle, ...styles.container}}>
             <View
                 style={{...styles.image, height: props.cardStyle.height*1.15}}
             >
-                <ImageBackground
-                    source={props.image?{uri:props.image}:{uri:props.icon}}
-                    style={styles.imageBack}
-                >
-                    <Loading animating={props.imageLoading} type={'Fold'} color={Colors.ForestBiome.primary}/>
-                </ImageBackground>
+
+                    <ImageBackground
+                        source={props.image?{uri:props.image}:{uri:props.icon}}
+                        style={styles.imageBack}
+                    >
+                        <Loading animating={props.imageLoading} type={'Fold'} color={Colors.ForestBiome.primary}/>
+                    </ImageBackground>
             </View>
             <View style={styles.textBar}>
                 <Text style={{...styles.subtitle, fontSize: 10}}>Result {props.index+1}/{props.total}</Text>
+                {
+                    <View style={styles.row}>
+                        <IconButton
+                            icon={'map-marker-distance'}
+                            size={14}
+                            color={Colors.ForestBiome.background}
+                        />
+                        {
+                            closeness(props.currentLat,props.currentLng,props.locationLat, props.locationLng)
+                        }
+                    </View>
+                }
                 <Text style={{...styles.title, ...titleFontSizeDetect()}}>{props.title}</Text>
-                <Text style={{...styles.subtitle, ...subtitleFontSizeDetect()}}>{props.vicinity}</Text>
+                {/*{*/}
+                {/*    props.vicinity?*/}
+                {/*    <Text style={{...styles.subtitle, ...subtitleFontSizeDetect()}}>{props.vicinity.substring(0,60)}</Text>:null*/}
+                {/*}*/}
                 <Rating
                     startingValue={props.rating}
                     type='custom'
@@ -73,6 +156,7 @@ const PlaceCard = props => {
                 </TouchableOpacity>
             </View>
         </View>
+        </TouchableOpacity>
     )
 }
 
@@ -130,6 +214,25 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 12,
         fontFamily: 'poppins-regular'
+    },
+    close: {
+        fontFamily: 'poppins-regular',
+        color: Colors.ForestBiome.background,
+        shadowRadius: 1,
+        shadowOpacity: 0.5,
+        shadowColor: Colors.ForestBiome.primaryVariant,
+    },
+    normal: {
+        fontFamily: 'poppins-regular',
+        color: Colors.ForestBiome.background
+    },
+    far: {
+        fontFamily: 'poppins-regular',
+        color: Colors.ForestBiome.background
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 })
 

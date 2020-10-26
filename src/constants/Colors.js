@@ -30,8 +30,9 @@ const Colors = {
         primary: '#F65058',
         primaryVariant: '#5CDB95',
         secondary: '#FBDE44FF',
-        background: '#28334A',
-        backgroundVariant: '#101820'
+        //background: '#28334A',
+        background: '#101820',
+        backgroundVariant: '#28334A'
     }
 }
 

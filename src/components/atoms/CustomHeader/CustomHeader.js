@@ -2,6 +2,14 @@ import React from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 import {IconButton} from "react-native-paper";
 
+//Takes the following props:
+//titleStyle (Styles)
+//containerStyle (Styles)
+//type ('modal'/'simple')
+//text (String)
+//subtext (String)
+
+
 const CustomHeader = props => {
 
     const closeButton = () => {

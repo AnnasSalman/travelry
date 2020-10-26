@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from 'react'
-import {Text, View, StyleSheet, ImageBackground, Dimensions} from 'react-native'
-import MapPlaces from "../MapPlaces/MapPlaces";
+import {Text, View, StyleSheet, ImageBackground, Dimensions, Linking, FlatList} from 'react-native'
 import CustomHeader from "../../../components/atoms/CustomHeader/CustomHeader";
 import Colors from "../../../constants/Colors";
 import PlaceDetail from "../../../models/PlaceDetail";
 import Photos from "../../../models/Photos";
-import {IconButton} from 'react-native-paper'
+import {IconButton, Button, Avatar} from 'react-native-paper'
 import Carousel, {Pagination} from "react-native-snap-carousel";
 import SegmentedControl from '@react-native-community/segmented-control';
+import Loading from "../../../components/atoms/Loading/Loading";
+import {showLocation} from "react-native-map-link";
 
 
 
@@ -25,47 +26,161 @@ const Place = props => {
 
     const [place] = useState(props.navigation.state.params)
     const [placeDetails, setPlaceDetails] = useState({})
-    const [pictureUrls, setPictureurls] = useState( [
-            "https://lh3.googleusercontent.com/p/AF1QipN8PL4ieclD2MilJH7iGIOI0NgSF0RX1u1R5QhB=s1600-w750",
-            "https://lh3.googleusercontent.com/p/AF1QipP2fvoUjeztffgHAZ6uEUZ4hFQk7hJQ1ug_foPh=s1600-w750",
-            "https://lh3.googleusercontent.com/p/AF1QipMN4-Ry91JOgSyTtAIDaC5BbTu1FsJjEhJ7BPcr=s1600-w750",
-            "https://lh3.googleusercontent.com/p/AF1QipM9Ewhh3hVyfoaTvmquxy5TKsXHb2zZNIgkB1OP=s1600-w750",
-            "https://lh3.googleusercontent.com/p/AF1QipMqj7cGdnkTjMZu_3GPoGeHwRJMXqdcHx4_e32x=s1600-w750",
-        ]
-    )
+    const [pictureUrls, setPictureurls] = useState([])
     const [index, setIndex] = useState(0)
     const [picLoading, setPicLoading] = useState(false)
     const [tabIndex, setTabIndex] = useState(0)
 
-    // useEffect(()=>{
-    //     getDetails()
-    // },[])
+    useEffect(() => {
+        getDetails()
+    }, [])
 
-    // useEffect(()=>{
-    //     getPhotos()
-    // },[placeDetails])
+    useEffect(() => {
+        getPhotos()
+    }, [placeDetails])
 
-    const getDetails = async() => {
-        try{
+    const getDetails = async () => {
+        try {
             const placeInfo = new PlaceDetail(place.place_id)
             const details = await placeInfo.getPlaceDetails()
+            console.log('goyifhs')
             setPlaceDetails(details)
-        }
-        catch(e){
+        } catch (e) {
             console.log(e)
         }
     }
 
-    const getPhotos = async() => {
+    const getPhotos = async () => {
         setPicLoading(true)
-        try{
+        try {
             const photos = new Photos(placeDetails.photos)
             const photoUrls = await photos.getPhotos(5)
             setPictureurls(photoUrls)
             setPicLoading(false)
-        }
-        catch(e){
+        } catch (e) {
             setPicLoading(false)
+        }
+    }
+
+    const onCall = () => {
+        let phoneNumber = ''
+        if (placeDetails.international_phone_number) {
+            phoneNumber = placeDetails.international_phone_number
+        } else if (placeDetails.formatted_phone_number) {
+            phoneNumber = placeDetails.formatted_phone_number
+        }
+        if (Platform.OS === 'android') {
+            phoneNumber = 'tel:${' + phoneNumber + '}';
+        } else {
+            phoneNumber = 'telprompt:${' + phoneNumber + '}';
+        }
+        Linking.openURL(phoneNumber);
+    }
+
+    const directionsHandler = () => {
+        const navdata = props.navigation.state.params
+
+        showLocation({
+            latitude: navdata.geometry.location.lng,
+            longitude: navdata.geometry.location.lng,
+            sourceLatitude: navdata.location.lat,  // optionally specify starting location for directions
+            sourceLongitude: navdata.location.lng,  // not optional if sourceLatitude is specified
+            // title: 'The White House',  // optional
+            // googleForceLatLon: false,  // optionally force GoogleMaps to use the latlon for the query instead of the title
+            // googlePlaceId: 'ChIJGVtI4by3t4kRr51d_Qm_x58',  // optionally specify the google-place-id
+            alwaysIncludeGoogle: true, // optional, true will always add Google Maps to iOS and open in Safari, even if app is not installed (default: false)
+            // dialogTitle: 'This is the dialog Title', // optional (default: 'Open in Maps')
+            // dialogMessage: 'This is the amazing dialog Message', // optional (default: 'What app would you like to use?')
+            // cancelText: 'This is the cancel button text', // optional (default: 'Cancel')
+            // appsWhiteList: ['google-maps'], // optionally you can set which apps to show (default: will show all supported apps installed on device)
+            // naverCallerName: 'com.example.myapp' // to link into Naver Map You should provide your appname which is the bundle ID in iOS and applicationId in android.
+            // // appTitles: { 'google-maps': 'My custom Google Maps title' } // optionally you can override default app titles
+            // // app: 'uber'  // optionally specify specific app to use
+        })
+    }
+
+    const renderReview = ({item}) => {
+        return(
+            <View style={styles.review}>
+                 <View style={styles.row}>
+                     <Avatar.Image size={24} source={{uri: item.profile_photo_url}}/>
+                     <Text style={styles.bodyText}>{item.author_name}</Text>
+                 </View>
+                 <Text style={styles.subHeading}>{item.rating} out of 5</Text>
+                 <Text style={styles.bodyText}>{item.text}</Text>
+            </View>
+        )
+}
+
+    const body = () => {
+        if(tabIndex===0){
+            return(
+                <View style={styles.bodyContainer}>
+                    {/*<Text>Address: {placeDetails.formatted_address}</Text>*/}
+                    {
+                        placeDetails.opening_hours?
+                        <View style={styles.row}>
+                            <IconButton
+                                icon={placeDetails.opening_hours.open_now?'door-open':'door-closed'}
+                                color={placeDetails.opening_hours.open_now?Colors.ForestBiome.primaryVariant:Colors.ForestBiome.primary}
+                                size={25}
+                            />
+                            <Text
+                                style={{...styles.subHeading,
+                                    color: placeDetails.opening_hours.open_now?
+                                        Colors.ForestBiome.primaryVariant:
+                                        Colors.ForestBiome.primary}}>
+                                {placeDetails.opening_hours.open_now?'Open Now': 'Closed'}
+                            </Text>
+                        </View>
+                            :null
+                    }
+                    <View style={styles.row}>
+                        <IconButton
+                            color={Colors.ForestBiome.primary}
+                            size={15}
+                            icon='earth'
+                        />
+                        <Text style={styles.bodyText}>{placeDetails.formatted_address}</Text>
+                    </View>
+                    {placeDetails.international_phone_number || placeDetails.formatted_phone_number?
+                        <View style={styles.row}>
+                            <IconButton
+                                color={Colors.ForestBiome.primary}
+                                size={15}
+                                icon='phone'
+                            />
+                            <Text style={styles.bodyText}>{placeDetails.international_phone_number?placeDetails.international_phone_number:placeDetails.formatted_phone_number}</Text>
+                        </View>:null
+                    }
+                    {placeDetails.international_phone_number || placeDetails.formatted_phone_number?
+                        <View style={styles.buttonContainer}>
+                            <Button
+                                icon={'phone'}
+                                mode={'contained'}
+                                color={Colors.ForestBiome.primary}
+                                onPress={()=>onCall()}
+                            >
+                                Call now
+                            </Button>
+                        </View>:null
+                    }
+                </View>
+            )
+        }
+        else{
+            return(
+                <View style={styles.reviewContainer}>
+                    {
+                        placeDetails.reviews && placeDetails.reviews.length>0?
+                            <FlatList
+                                data={placeDetails.reviews}
+                                renderItem={renderReview}
+                                keyExtractor={item => item.author_url}
+                            />:null
+                    }
+                </View>
+            )
         }
     }
 
@@ -78,10 +193,12 @@ const Place = props => {
                 itemWidth={width}
                 onSnapToItem={(index) => setIndex(index) }
             />
+            <View style={styles.loadingContainer}>
+                <Loading type={'Fold'} color={Colors.ForestBiome.primary} animating={picLoading}/>
+            </View>
             <View style={styles.bottom}>
                 <View style={styles.pagination}>
                     <Pagination
-                        vertical={true}
                         dotsLength={pictureUrls.length}
                         activeDotIndex={index}
                         containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.0)' }}
@@ -105,25 +222,27 @@ const Place = props => {
                     size={45}
                     color={Colors.ForestBiome.background}
                     style={styles.iconButton}
-                    onPress={()=>console.log('heylo')}
+                    onPress={()=>directionsHandler()}
                 />
-                <Text style={styles.name}>Playground</Text>
+                <Text style={styles.name}>{placeDetails.name}</Text>
                 <SegmentedControl
-                    values={['One', 'Two']}
+                    values={['Information', 'Reviews']}
                     selectedIndex={tabIndex}
-                    onChange={(event) => {setTabIndex(event.nativeEvent.selectedSegmentIndex)}}
+                    tintColor={Colors.ForestBiome.primary}
+                    backgroundColor={Colors.ForestBiome.background}
+                    fontStyle={{
+                        color: Colors.ForestBiome.primary,
+                        fontFamily: 'poppins-regular',
+                        fontSize: 15
+                    }}
+                    onChange={(event) => {
+                        setTabIndex(event.nativeEvent.selectedSegmentIndex)
+                    }}
+                    style={styles.tab}
                 />
-                {/*<SegmentedControlTab*/}
-                {/*    values={["First", "Second"]}*/}
-                {/*    selectedIndex={tabIndex}*/}
-                {/*    onTabPress={(index)=>setTabIndex(index)}*/}
-                {/*    borderRadius={15}*/}
-                {/*    tabsContainerStyle={styles.tabsContainerStyle}*/}
-                {/*    tabStyle={styles.tabStyle}*/}
-                {/*    tabTextStyle={styles.tabTextStyle}*/}
-                {/*    activeTabTextStyle={styles.activeTabTextStyle}*/}
-                {/*    activeTabStyle={styles.activeTabStyle}*/}
-                {/*/>*/}
+                {
+                    body()
+                }
             </View>
             <CustomHeader
                 text={''}
@@ -169,7 +288,7 @@ const styles = StyleSheet.create({
     },
     bottom: {
         padding: '4%',
-        flex: 0.6,
+        flex: 0.9,
     },
     name: {
         color: Colors.ForestBiome.primary,
@@ -184,8 +303,17 @@ const styles = StyleSheet.create({
     },
     pagination: {
         position: 'absolute',
-        top: '-2%',
-        right: '-4%'
+        top: '-20%',
+        left: '4%'
+    },
+    tab: {
+        borderWidth: 1,
+        borderColor: Colors.ForestBiome.primary,
+        margin: 10,
+        marginTop: 20,
+        height: 35,
+        marginLeft: 20,
+        marginRight: 20,
     },
     tabStyle: {
         backgroundColor: Colors.ForestBiome.background,
@@ -204,6 +332,36 @@ const styles = StyleSheet.create({
     },
     activeTabStyle: {
         backgroundColor: Colors.ForestBiome.primary,
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    bodyText: {
+        fontSize: 14,
+        color: 'white',
+        margin: 5,
+    },
+    subHeading:{
+        fontSize: 18,
+        margin: 5,
+        fontWeight: 'bold',
+        color: Colors.ForestBiome.primary
+    },
+    buttonContainer: {
+        alignItems: 'center',
+        justifyContent: 'flex-end'
+    },
+    review: {
+        margin: 15,
+    },
+    reviewContainer: {
+        height: '60%'
+    },
+    loadingContainer: {
+        position: 'absolute',
+        left: 30,
+        top: 30
     }
 })
 

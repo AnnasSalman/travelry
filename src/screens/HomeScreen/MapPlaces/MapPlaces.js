@@ -2,7 +2,6 @@ import React, {useState, useEffect, useRef} from 'react'
 import {View, Text, StyleSheet, Dimensions} from 'react-native'
 import {IconButton, Button} from 'react-native-paper'
 import MapView, {Marker, Circle, PROVIDER_GOOGLE, Callout} from "react-native-maps";
-import Places from "../Places/Places";
 import Carousel from "react-native-snap-carousel/src/carousel/Carousel";
 import PlaceCard from "../../../components/atoms/PlaceCard/PlaceCard";
 import Colors from "../../../constants/Colors";
@@ -113,26 +112,12 @@ const MapPlaces = props => {
             // // appTitles: { 'google-maps': 'My custom Google Maps title' } // optionally you can override default app titles
             // // app: 'uber'  // optionally specify specific app to use
         })
-
-        // const startPoint = {
-        //     longitude: navigationParams.coordinates.lng,
-        //     latitude: navigationParams.coordinates.lat
-        // }
-        //
-        // const endPoint = {
-        //     longitude: nearby[index].geometry.location.lng,
-        //     latitude: nearby[index].geometry.location.lat
-        // }
-        //
-        // const transportPlan = 'd';
-        //
-        // OpenMapDirections(startPoint, endPoint, transportPlan).then(res => {
-        //     console.log(res)
-        // });
     }
 
     const cardPressHandler = (item, image) => {
-        props.navigation.navigate('placeScreen', {...item, image})
+        props.navigation.navigate('placeScreen',
+            {...item, image,
+            location: {lat: props.navigation.state.params.coordinates.lat, lng: props.navigation.state.params.coordinates.lng}})
     }
 
     const _renderItem = ({item, index}) => {

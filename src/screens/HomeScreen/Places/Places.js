@@ -6,7 +6,6 @@ import Colors from "../../../constants/Colors";
 import TypeCarousel from "../../../components/molecules/TypeCarousel/TypeCarousel";
 import PlaceTypes from "../../../constants/PlaceTypes";
 import Location from "../../../models/Location";
-import MapPlaces from "../MapPlaces/MapPlaces";
 
 const {height, width} = Dimensions.get('window')
 
@@ -265,7 +264,7 @@ const styles = StyleSheet.create({
         marginTop: 15
     },
     navBar:{
-        backgroundColor: 'grey',
+        backgroundColor: Colors.ForestBiome.backgroundVariant,
         opacity: 0.6,
         height: 55,
         borderTopRightRadius: 25,

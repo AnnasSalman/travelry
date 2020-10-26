@@ -105,7 +105,7 @@ const HomeScreen = props => {
                 <ImageBackground source={background} style={styles.backgroundImage}>
                     <LinearGradient
                         style={styles.backgroundImage}
-                        colors={['transparent', 'rgba(0,0,0,0.8)']}
+                        colors={['transparent', 'rgba(16,24,32,1)']}
                         start={[0.8, 0.0]}
                         end={[0.0, 0.6]}
                     >

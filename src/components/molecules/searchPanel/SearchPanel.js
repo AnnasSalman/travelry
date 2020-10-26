@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
         // opacity: 0.6,
     },
     searchBar: {
-        marginTop: 6,
+        marginTop: 10,
         marginLeft: 30,
         marginRight: 30,
         marginBottom: 15,
@@ -176,11 +176,13 @@ const styles = StyleSheet.create({
         color: Colors.DarkTheme.onSurface,
     },
     panelHeader: {
-        backgroundColor: 'rgba(0, 0, 0, 0.95)',
+        // backgroundColor: 'rgba(0, 0, 0, 0.95)',
+        backgroundColor: Colors.ForestBiome.background
     },
     panelBody: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.95)',
+        // backgroundColor: 'rgba(0, 0, 0, 0.95)',
+        backgroundColor: Colors.ForestBiome.background
     },
     text: {
         color: 'grey',

@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useRef} from 'react'
-import {View, Text, StyleSheet, Dimensions} from 'react-native'
-import {Button, IconButton} from "react-native-paper";
+import React, {useEffect, useState} from "react";
+import {View, Text, StyleSheet} from 'react-native'
+import CustomHeader from "../../../components/atoms/CustomHeader/CustomHeader";
 import Colors from "../../../constants/Colors";
 import {Calendar} from "react-native-calendars";
 import moment from "moment";
-import DropdownAlert from "react-native-dropdownalert";
+import {Button} from "react-native-paper";
 
 function getDates(startDate, stopDate) {
     var dateArray = [];
@@ -17,52 +17,35 @@ function getDates(startDate, stopDate) {
     return dateArray;
 }
 
-const {height, width} = Dimensions.get('window')
+const TourDates = props => {
 
-const Booking = props => {
-
-    const alert = useRef(null)
-
-    const [startdate, setStartDate ] = useState('')
-    const [enddate, setenddate ] = useState('')
     const [state, setstate] = useState({})
-
-    const onSubmit = () => {
-        if(!state.isEndDatePicked){
-            alert.current.alertWithType('custom','Incomplete Dates', 'Add An End Date To Continue')
-        }
-        else{
-            props.navigation.navigate('numberOfRooms', {...props.navigation.state.params, startDate: startdate, endDate: enddate})
-        }
-    }
+    const [startdate, setStartDate ] = useState()
+    const [enddate, setenddate ] = useState()
 
     useEffect(()=>{
-        let marked = {}
-        const dates = (getDates(props.navigation.state.params.filters.startDate, props.navigation.state.params.filters.endDate))
-        dates.forEach((date,index)=>{
-            if(index===0){
-                marked={...marked, [date]: { startingDay: true, color: Colors.ForestBiome.primary, textColor: '#FFFFFF'}}
-            }
-            else if(index === dates.length-1){
-                marked={...marked, [date]: { endingDay: true, color: Colors.ForestBiome.primary, textColor: '#FFFFFF'}}
-            }
-            else{
-                marked={...marked, [date]: {color: Colors.ForestBiome.primary, textColor: '#FFFFFF'}}
-            }
-        })
+        const tomorrow = new Date()
+        tomorrow.setDate(new Date().getDate()+1)
+        const dates = getDates(new Date(), tomorrow)
+        setStartDate(dates[0])
+        setenddate(dates[dates.length-1])
         setstate({
-            markedDates: marked,
+            markedDates: {
+                [dates[0]]: { startingDay: true, color: Colors.ForestBiome.primary, textColor: '#FFFFFF'},
+                [dates[1]]: { endingDay: true, color: Colors.ForestBiome.primary, textColor: '#FFFFFF'}
+                },
             isStartDatePicked: false,
             isEndDatePicked: true,
         })
-        // setStartDate(dates[0])
-        // setenddate(dates[dates.length-1])
-        // setstate({
-        //     markedDates: marked,
-        //     isStartDatePicked: false,
-        //     isEndDatePicked: true,
-        // })
     },[])
+
+    const _onBack = () => {
+        props.navigation.goBack()
+    }
+
+    const _onNext = () => {
+        props.navigation.navigate('plan', {...props.navigation.state.params, dates: Object.keys(state.markedDates)})
+    }
 
     const onDayPress = (day) => {
         if (state.isStartDatePicked == false) {
@@ -107,16 +90,14 @@ const Booking = props => {
 
     return(
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.heading}>Booking Details</Text>
-                <IconButton
-                    icon='close-circle'
-                    color={Colors.ForestBiome.primary}
-                    size={30}
-                    onPress={()=>props.navigation.goBack()}
-                />
-            </View>
-            <Text style={styles.subHeading}>Step 1/2 - Pick Dates</Text>
+            <CustomHeader
+                text='Select Tour Dates'
+                subtext={'Select the time period for you tour'}
+                titleStyle={styles.headerText}
+                containerStyle={styles.header}
+                subtitleStyle={styles.sub}
+                onBack={_onBack}
+            />
             <View style={styles.body}>
                 <View style={styles.dates}>
                     <View style={styles.date}>
@@ -143,41 +124,54 @@ const Booking = props => {
                     style={styles.calendar}
                     contentStyle={{height: 50,}}
                 />
-                <Button
-                    mode="contained"
-                    style={styles.button}
-                    color={Colors.ForestBiome.primary}
-                    onPress={()=>onSubmit()}
-
-                >
-                    Next Step
-                </Button>
             </View>
-            <DropdownAlert ref={alert} containerStyle={styles.alert} titleStyle={{color: Colors.ForestBiome.secondary, fontSize: 18}}/>
+            {
+                state.isEndDatePicked?
+                    <Button
+                        style={styles.button}
+                        color={Colors.ForestBiome.primary}
+                        mode="contained"
+                        onPress={_onNext}>
+                        Next
+                    </Button>:
+                    null
+            }
         </View>
     )
 }
 
-const styles = StyleSheet.create({
+const styles =StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.ForestBiome.background
+        backgroundColor: Colors.ForestBiome.background,
+        paddingBottom: 55,
+        paddingTop: 25,
     },
-    header: {
-        padding: 40,
-        paddingBottom: 0,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
+    headerText: {
+        color: 'white'
     },
-    body:{
-        padding: 5,
-        alignItems: 'center'
+    body: {
+        flex: 1
+    },
+    text:{
+        color: Colors.ForestBiome.primary,
+        width: '70%',
+        marginTop: 10,
+        textAlign: 'center',
+
+    },
+    sub: {
+        color: Colors.ForestBiome.primary,
+        fontFamily: 'poppins-regular'
+    },
+    calendar: {
+        marginTop: 25
     },
     dates:{
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 20
     },
     date:{
         borderWidth: 1,
@@ -189,37 +183,10 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 20,
         margin: 2
     },
-    calendar: {
-        width: width-40,
-    },
-    heading: {
-        fontFamily: 'poppins-medium',
-        color: Colors.ForestBiome.primary,
-        fontSize: 26,
-    },
     value: {
         color: 'white',
-        fontSize: 18
+        fontSize: 14
     },
-    subHeading: {
-        color: Colors.ForestBiome.primary,
-        paddingHorizontal: 40,
-        paddingBottom: 10,
-        fontSize: 15,
-    },
-    button:{
-        height: height*0.07,
-        width: width*0.8,
-        justifyContent: 'center',
-        borderRadius: 15,
-    },
-    alert: {
-        padding: 16,
-        flexDirection: 'row',
-        backgroundColor: Colors.ForestBiome.primary,
-        borderBottomRightRadius: 25,
-        borderBottomLeftRadius: 25
-    }
 })
 
 const theme = {
@@ -245,10 +212,10 @@ const theme = {
     textDayHeaderFontSize: 16,
 }
 
-Booking.navigationOptions = ({navigation}) => {
+TourDates.navigationOptions = ({navigation}) => {
     return {
         headerShown: false,
     };
 };
 
-export default Booking
+export default TourDates

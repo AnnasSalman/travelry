@@ -29,12 +29,31 @@ class Photos {
                 pictureUrls.push(pic.request.responseURL)
             }
             catch(e){
-
+                return e
             }
         }
-        console.log(pictureUrls)
         return pictureUrls
     }
+
+    getOnePhoto = async() => {
+        try{
+            const pic = await axios.request({
+                url: 'https://maps.googleapis.com/maps/api/place/photo',
+                method: 'get',
+                params:{
+                    key: Keys.mapsKey,
+                    photoreference: this._photos[0].photo_reference,
+                    maxwidth: 550
+                }
+            })
+            return pic.request.responseURL
+        }
+        catch (e) {
+            return(e)
+        }
+    }
 }
+
+
 
 export default Photos

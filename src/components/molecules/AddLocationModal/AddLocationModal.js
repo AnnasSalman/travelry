@@ -50,7 +50,8 @@ const AddLocationModal = props => {
                 }}
                 query={{
                     key: Keys.mapsKey,
-                    components: 'country:pk'
+                    components: 'country:pk',
+                    // types:'(cities)'
                 }}
             />
         </View>
@@ -104,7 +105,7 @@ const autoComplete = {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.ForestBiome.background
+        backgroundColor: Colors.ForestBiome.background,
     },
     title: {
         color: Colors.ForestBiome.primary,

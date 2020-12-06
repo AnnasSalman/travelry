@@ -61,13 +61,14 @@ const PlanRoute = props => {
         <View style={styles.container}>
             <View style={styles.column}>
                 <Text style={styles.title}>Day Goal</Text>
+                {props.children}
                 <Text style={styles.instruction}>Travel from <Text style={styles.highlight}>{props.originName}</Text> to <Text style={styles.highlight}>Murree {props.destinationName}</Text></Text>
                 {props.waypointNames.length>0?
                     <View style={styles.body}>
                         <Text style={styles.instruction}>via</Text>
                         {
                             props.waypointNames.map((name)=>(
-                                <View>
+                                <View key={name}>
                                     <Text style={styles.instruction}><Text style={styles.highlight}>{name}</Text></Text>
                                 </View>
                             ))
@@ -78,18 +79,18 @@ const PlanRoute = props => {
             </View>
             <MapView
                 initialRegion={{
-                    latitude: props.originLat,
-                    longitude: props.originLng,
-                    latitudeDelta: LATITUDE_DELTA,
-                    longitudeDelta: LONGITUDE_DELTA,
+                    latitude: parseFloat(props.originLat),
+                    longitude: parseFloat(props.originLng),
+                    latitudeDelta: parseFloat(LATITUDE_DELTA),
+                    longitudeDelta: parseFloat(LONGITUDE_DELTA),
                 }}
                 style={styles.map}
                 provider={PROVIDER_GOOGLE}
                 customMapStyle={MapStyles}
             >
                 <MapViewDirections
-                    origin={{latitude: props.originLat, longitude: props.originLng}}
-                    destination={{latitude: props.destinationLat, longitude: props.destinationLng}}
+                    origin={{latitude: parseFloat(props.originLat), longitude: parseFloat(props.originLng)}}
+                    destination={{latitude: parseFloat(props.destinationLat), longitude: parseFloat(props.destinationLng)}}
                     apikey={Keys.mapsKey}
                     strokeWidth={4}
                     strokeColor={Colors.ForestBiome.primary}

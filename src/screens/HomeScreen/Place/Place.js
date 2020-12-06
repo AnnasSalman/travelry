@@ -43,7 +43,6 @@ const Place = props => {
         try {
             const placeInfo = new PlaceDetail(place.place_id)
             const details = await placeInfo.getPlaceDetails()
-            console.log('goyifhs')
             setPlaceDetails(details)
         } catch (e) {
             console.log(e)
@@ -81,7 +80,7 @@ const Place = props => {
         const navdata = props.navigation.state.params
 
         showLocation({
-            latitude: navdata.geometry.location.lng,
+            latitude: navdata.geometry.location.lat,
             longitude: navdata.geometry.location.lng,
             sourceLatitude: navdata.location.lat,  // optionally specify starting location for directions
             sourceLongitude: navdata.location.lng,  // not optional if sourceLatitude is specified

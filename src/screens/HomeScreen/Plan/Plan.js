@@ -6,342 +6,30 @@ import Colors from "../../../constants/Colors";
 import Tour from "../../../models/Tour";
 import {Agenda} from "react-native-calendars";
 import PlanDayWidget from "../../../components/molecules/PlanDayWidget/PlanDayWidget";
+import PlanStayDayWidget from "../../../components/molecules/PlanStayDayWidget/PlanStayDayWidget";
+import TourPlanPlaceWidget from "../../../components/atoms/TourPlanPlaceWidget/TourPlanPlaceWidget";
+import tourDemo from "../../../constants/demo";
 
 const {height, width} = Dimensions.get('window')
-const demo = {
-    tour: {
-        route: [
-            {
-                name: 'D.G. Khan International Airport, 15 km (9.3 mi) from the city centre of Dera Ghazi Khan، Airport Road، Islamabad, Pakistan',
-                type: 'origin',
-                distance: {
-                    text: '0 km',
-                    value: 0
-                },
-                duration: {
-                    text: '0 mins',
-                    value: 0
-                },
-                geometry: {
-                    coordinates: {
-                        lat: '33.6844202',
-                        lng: '73.04788479999999'
-                    }
-                },
-                stayDuration: 0,
-                tourDays: [
-                    1
-                ]
-            },
-            {
-                name: '693 Lane Number 2, Quaid-e-Azam Colony Quaid e Azam Colony, Rawalpindi, Punjab, Pakistan',
-                type: 'destination',
-                distance: {
-                    text: '19.7 km',
-                    value: 19738
-                },
-                duration: {
-                    text: '48 mins',
-                    value: 2854
-                },
-                geometry: {
-                    coordinates: {
-                        lat: '33.5651107',
-                        lng: '73.0169135'
-                    }
-                },
-                stayDuration: 0,
-                tourDays: [
-                    1
-                ]
-            },
-            {
-                name: 'Mall Road, Murree, Rawalpindi, Khyber Pakhtunkhwa, Pakistan',
-                type: 'destination',
-                distance: {
-                    text: '72.1 km',
-                    value: 72131
-                },
-                duration: {
-                    text: '2 hours 2 mins',
-                    value: 7298
-                },
-                geometry: {
-                    coordinates: {
-                        lat: '33.906528',
-                        lng: '73.393692'
-                    }
-                },
-                stayDuration: 3,
-                tourDays: [
-                    1,
-                    2,
-                    3,
-                    4
-                ]
-            },
-            {
-                name: 'Nathia Gali Rd, Nathia Gali, Abbottabad, Khyber Pakhtunkhwa, Pakistan',
-                type: 'destination',
-                distance: {
-                    text: '35.1 km',
-                    value: 35129
-                },
-                duration: {
-                    text: '1 hour 25 mins',
-                    value: 5093
-                },
-                geometry: {
-                    coordinates: {
-                        lat: '34.0729404',
-                        lng: '73.3811849'
-                    }
-                },
-                stayDuration: 1,
-                tourDays: [
-                    4,
-                    5
-                ]
-            }
-        ]
-    },
-    dateSchedule: {
-        '2020-10-23': [
-            {
-                locationstoVisit: [
-                    {
-                        name: 'D.G. Khan International Airport, 15 km (9.3 mi) from the city centre of Dera Ghazi Khan، Airport Road، Islamabad, Pakistan',
-                        type: 'origin',
-                        distance: {
-                            text: '0 km',
-                            value: 0
-                        },
-                        duration: {
-                            text: '0 mins',
-                            value: 0
-                        },
-                        geometry: {
-                            coordinates: {
-                                lat: '33.6844202',
-                                lng: '73.04788479999999'
-                            }
-                        },
-                        stayDuration: 0,
-                        tourDays: [
-                            1
-                        ]
-                    },
-                    {
-                        name: '693 Lane Number 2, Quaid-e-Azam Colony Quaid e Azam Colony, Rawalpindi, Punjab, Pakistan',
-                        type: 'destination',
-                        distance: {
-                            text: '19.7 km',
-                            value: 19738
-                        },
-                        duration: {
-                            text: '48 mins',
-                            value: 2854
-                        },
-                        geometry: {
-                            coordinates: {
-                                lat: '33.5651107',
-                                lng: '73.0169135'
-                            }
-                        },
-                        stayDuration: 0,
-                        tourDays: [
-                            1
-                        ]
-                    },
-                    {
-                        name: 'Mall Road, Murree, Rawalpindi, Khyber Pakhtunkhwa, Pakistan',
-                        type: 'destination',
-                        distance: {
-                            text: '72.1 km',
-                            value: 72131
-                        },
-                        duration: {
-                            text: '2 hours 2 mins',
-                            value: 7298
-                        },
-                        geometry: {
-                            coordinates: {
-                                lat: '33.906528',
-                                lng: '73.393692'
-                            }
-                        },
-                        stayDuration: 3,
-                        tourDays: [
-                            1,
-                            2,
-                            3,
-                            4
-                        ]
-                    }
-                ],
-                index: 1
-            }
-        ],
-        '2020-10-24': [
-            {
-                locationstoVisit: [
-                    {
-                        name: 'Mall Road, Murree, Rawalpindi, Khyber Pakhtunkhwa, Pakistan',
-                        type: 'destination',
-                        distance: {
-                            text: '72.1 km',
-                            value: 72131
-                        },
-                        duration: {
-                            text: '2 hours 2 mins',
-                            value: 7298
-                        },
-                        geometry: {
-                            coordinates: {
-                                lat: '33.906528',
-                                lng: '73.393692'
-                            }
-                        },
-                        stayDuration: 3,
-                        tourDays: [
-                            1,
-                            2,
-                            3,
-                            4
-                        ]
-                    }
-                ],
-                index: 2
-            }
-        ],
-        '2020-10-25': [
-            {
-                locationstoVisit: [
-                    {
-                        name: 'Mall Road, Murree, Rawalpindi, Khyber Pakhtunkhwa, Pakistan',
-                        type: 'destination',
-                        distance: {
-                            text: '72.1 km',
-                            value: 72131
-                        },
-                        duration: {
-                            text: '2 hours 2 mins',
-                            value: 7298
-                        },
-                        geometry: {
-                            coordinates: {
-                                lat: '33.906528',
-                                lng: '73.393692'
-                            }
-                        },
-                        stayDuration: 3,
-                        tourDays: [
-                            1,
-                            2,
-                            3,
-                            4
-                        ]
-                    }
-                ],
-                index: 3
-            }
-        ],
-        '2020-10-26': [
-            {
-                locationstoVisit: [
-                    {
-                        name: 'Mall Road, Murree, Rawalpindi, Khyber Pakhtunkhwa, Pakistan',
-                        type: 'destination',
-                        distance: {
-                            text: '72.1 km',
-                            value: 72131
-                        },
-                        duration: {
-                            text: '2 hours 2 mins',
-                            value: 7298
-                        },
-                        geometry: {
-                            coordinates: {
-                                lat: '33.906528',
-                                lng: '73.393692'
-                            }
-                        },
-                        stayDuration: 3,
-                        tourDays: [
-                            1,
-                            2,
-                            3,
-                            4
-                        ]
-                    },
-                    {
-                        name: 'Nathia Gali Rd, Nathia Gali, Abbottabad, Khyber Pakhtunkhwa, Pakistan',
-                        type: 'destination',
-                        distance: {
-                            text: '35.1 km',
-                            value: 35129
-                        },
-                        duration: {
-                            text: '1 hour 25 mins',
-                            value: 5093
-                        },
-                        geometry: {
-                            coordinates: {
-                                lat: '34.0729404',
-                                lng: '73.3811849'
-                            }
-                        },
-                        stayDuration: 1,
-                        tourDays: [
-                            4,
-                            5
-                        ]
-                    }
-                ],
-                index: 4
-            }
-        ],
-        '2020-10-27': [
-            {
-                locationstoVisit: [
-                    {
-                        name: 'Nathia Gali Rd, Nathia Gali, Abbottabad, Khyber Pakhtunkhwa, Pakistan',
-                        type: 'destination',
-                        distance: {
-                            text: '35.1 km',
-                            value: 35129
-                        },
-                        duration: {
-                            text: '1 hour 25 mins',
-                            value: 5093
-                        },
-                        geometry: {
-                            coordinates: {
-                                lat: '34.0729404',
-                                lng: '73.3811849'
-                            }
-                        },
-                        stayDuration: 1,
-                        tourDays: [
-                            4,
-                            5
-                        ]
-                    }
-                ],
-                index: 5
-            }
-        ]
-    }
+
+const getMaxNumber = (availablePlaces) => {
+    let highest = 0
+    availablePlaces.forEach((place)=>{
+        if(place.score>highest){
+            highest = place.score
+        }
+    })
+    return Math.floor(highest)
 }
 
 const Plan = props => {
 
-    const [plan, setPlan] = useState({})
-    const [planFetched, setPlanFetched] = useState(false)
+    const [plan, setPlan] = useState(tourDemo)
+    const [planFetched, setPlanFetched] = useState(true)
 
-    useEffect(()=>{
-        fetchTourPlan().then().catch()
-    },[])
+    // useEffect(()=>{
+    //     fetchTourPlan().then().catch()
+    // },[])
 
     const fetchTourPlan = async() => {
         const {locations, dates} = props.navigation.state.params
@@ -362,6 +50,15 @@ const Plan = props => {
 
     const _onBack = () => {
         props.navigation.goBack()
+    }
+
+    const _onChangePlace = (item) => {
+        props.navigation.navigate('availablePlaces', {item: item, highest: getMaxNumber(item.localAvailableLocations), _onNewPlaceSelected})
+    }
+
+    const _onNewPlaceSelected = (place, date) => {
+        const statePlaces  = plan.dateSchedule[date][0]
+        setPlan({...plan, dateSchedule: {...plan.dateSchedule, [date]: [{...statePlaces, localSelectedLocations: place}]   }})
     }
 
     return(
@@ -387,7 +84,7 @@ const Plan = props => {
                                 let waypoints = []
                                 let waypointnames = []
                                 for(let i=1; i<item.locationstoVisit.length-1; i++){
-                                    waypoints.push({latitude: item.locationstoVisit[i].geometry.coordinates.lat, longitude: item.locationstoVisit[i].geometry.coordinates.lng})
+                                    waypoints.push({latitude: parseFloat(item.locationstoVisit[i].geometry.coordinates.lat), longitude: parseFloat(item.locationstoVisit[i].geometry.coordinates.lng)})
                                     const nameArr = item.locationstoVisit[i].name.split(', ')
                                     waypointnames.push(nameArr[0]+', '+nameArr[1])
                                 }
@@ -403,6 +100,29 @@ const Plan = props => {
                                         destinationLat={item.locationstoVisit[item.locationstoVisit.length-1].geometry.coordinates.lat}
                                         destinationLng={item.locationstoVisit[item.locationstoVisit.length-1].geometry.coordinates.lng}
                                     />
+                                )
+                            }
+                            else if(item.localSelectedLocations){
+                                let originName = item.locationstoVisit[0].name.split(', ')
+                                let destinationName = item.localSelectedLocations.name
+                                return(
+                                    <PlanStayDayWidget
+                                        day={item.index}
+                                        waypointNames={[]}
+                                        waypoints={[]}
+                                        originName={originName[0]+', '+originName[1]}
+                                        destinationName={destinationName}
+                                        originLat={item.locationstoVisit[0].geometry.coordinates.lat}
+                                        originLng={item.locationstoVisit[0].geometry.coordinates.lng}
+                                        destinationLat={item.localSelectedLocations.geometry.location.lat}
+                                        destinationLng={item.localSelectedLocations.geometry.location.lng}
+                                        onChangePlace={()=>_onChangePlace(item)}
+                                    >
+                                        <TourPlanPlaceWidget
+                                            style={styles.planPlaceWidget}
+                                            imageReference={item.localSelectedLocations.photos[0].photo_reference}
+                                        />
+                                    </PlanStayDayWidget>
                                 )
                             }
                             else{
@@ -489,6 +209,12 @@ const styles = StyleSheet.create({
         color: Colors.ForestBiome.primary,
         fontFamily: 'poppins-regular',
         fontSize: 12
+    },
+    planPlaceWidget: {
+        height: 100,
+        width: '85%',
+        marginLeft: 25,
+        marginVertical: '4%'
     }
 })
 

@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import ReviewCarousel from "../components/atoms/ReviewCarousel";
+import WeatherPanel from "../components/molecules/WeatherPanel/WeatherPanel";
 import { LinearGradient } from 'expo-linear-gradient';
 import {
     View,
@@ -142,7 +143,10 @@ const HomeScreen = props => {
                 <SearchPanel
                     searchBarText={loc===''?'Enter a Location':loc}
                     onRoomPress={()=>props.navigation.navigate('room')}
-                    onTourPress={()=>props.navigation.navigate('toursScreen')}
+                    onHotelPress={()=>{
+                        demo.current.show()
+                    }}
+                    onTourPress={()=>props.navigation.navigate('plan')}
                     onSearchPress={()=>props.navigation.navigate('AddLocation', {onLocationChange: ()=>onLocationChange()})}
                     onPlacePress={()=>props.navigation.navigate('placesScreen')}
                 />

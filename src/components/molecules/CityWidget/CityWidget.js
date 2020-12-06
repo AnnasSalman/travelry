@@ -19,14 +19,16 @@ const CityWidget = props => {
                     subtitle={props.citySubtitle}
                     mapWidgetCenter={props.mapWidgetCenter}
                 />
-                <WeatherWidget
-                    containerStyle={props.weatherWidgetContainerStyle}
-                    textStyle={props.weatherWidgetTextStyle}
-                    iconStyle={props.weatherWidgetIconStyle}
-                    weatherIcon={props.weatherIcon}
-                    weather={props.weather}
-                    temperature={props.temperature}
-                />
+                <TouchableOpacity onPress={props.onWeatherPress}>
+                    <WeatherWidget
+                        containerStyle={props.weatherWidgetContainerStyle}
+                        textStyle={props.weatherWidgetTextStyle}
+                        iconStyle={props.weatherWidgetIconStyle}
+                        weatherIcon={props.weatherIcon}
+                        weather={props.weather}
+                        temperature={props.temperature}
+                    />
+                </TouchableOpacity>
             </View>
             <View style={styles.column}>
                 <StaticMapWidget

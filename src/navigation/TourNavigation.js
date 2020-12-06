@@ -7,8 +7,13 @@ import AddLocations from "../screens/HomeScreen/AddLocations/AddLocations";
 import AddCityModal from "../components/molecules/AddCityModal/AddCityModal";
 import TourDates from "../screens/HomeScreen/TourDates/TourDates";
 import Plan from "../screens/HomeScreen/Plan/Plan";
+import Hobbies from "../screens/HomeScreen/Hobbies/Hobbies";
+import AvailablePlaces from '../screens/HomeScreen/AvailablePlaces/AvailablePlaces'
 
 const TourNavigation = createStackNavigator({
+        hobbies: {
+            screen: Hobbies
+        },
         toursScreen: {
             screen: Tours
         },
@@ -29,6 +34,12 @@ const TourNavigation = createStackNavigator({
         },
         plan: {
             screen: Plan
+        },
+        availablePlaces: {
+            screen: AvailablePlaces,
+            navigationOptions: {
+                ...TransitionPresets.FadeFromBottomAndroid
+            }
         }
     },
     {

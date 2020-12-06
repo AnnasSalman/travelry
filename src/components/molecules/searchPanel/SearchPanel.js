@@ -34,9 +34,12 @@ class SearchPanel extends React.Component{
             );
             this.keyboardDidHideListener = Keyboard.addListener(
                 'keyboardDidHide',
-                () => this._panel.show({
-                    toValue: height * 0.35,
-                    velocity: 0.55
+                () =>
+                setTimeout(()=>{
+                    this._panel.show({
+                        toValue: height * 0.35,
+                        velocity: 0.55
+                    },1000)
                 })
             );
         }
@@ -76,7 +79,7 @@ class SearchPanel extends React.Component{
                     </TouchableWithoutFeedback>
                     <View style={styles.panelHeader}>
                         <View style={styles.searchBar}>
-                            <Text style={styles.title}>Discover</Text>
+                            <Text style={styles.title}>Search</Text>
                             <TouchableWithoutFeedback onPress={this.props.onSearchPress}>
                                 <View style={styles.searchBox}>
                                     <Icon

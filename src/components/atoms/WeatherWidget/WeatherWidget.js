@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text, View, StyleSheet, Image, ImageBackground} from 'react-native'
+import {Text, View, StyleSheet, Image, ImageBackground, TouchableOpacity} from 'react-native'
 import {IconButton} from "react-native-paper";
 import Colors from "../../../constants/Colors";
 import {LinearGradient} from "expo-linear-gradient";
@@ -63,7 +63,6 @@ const WeatherWidget = props => {
         else if(code==='50n'){
             return 'https://images.unsplash.com/photo-1503745328377-1f4355a2284b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60'
         }
-
     }
 
     return(

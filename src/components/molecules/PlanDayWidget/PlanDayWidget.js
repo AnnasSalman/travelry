@@ -30,7 +30,8 @@ const PlanDayWidget = props => {
                     setCurrentTab(event.nativeEvent.selectedSegmentIndex)
                 }}
             />
-            {currentTab===0?
+            {
+            currentTab===0?
                 <PlanRoute
                 waypointNames={props.waypointNames}
                 waypoints={props.waypoints}
@@ -54,6 +55,13 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 5,
         marginBottom: 15,
+        marginRight: 5,
+        backgroundColor: Colors.ForestBiome.backgroundVariant,
+        paddingVertical: 15,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 45,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10,
     },
     tab: {
         borderWidth: 1,
@@ -65,7 +73,7 @@ const styles = StyleSheet.create({
         marginRight: 20,
     },
     title: {
-        marginLeft: 10,
+        marginLeft: 20,
         color: 'white',
         fontFamily: 'poppins-medium',
         fontSize: 21

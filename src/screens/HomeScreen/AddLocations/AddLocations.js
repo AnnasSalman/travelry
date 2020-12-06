@@ -1,18 +1,16 @@
-import React, {useState, useRef, useEffect} from 'react'
+import React, {useState, useRef, useEffect, useLayoutEffect} from 'react'
 import {View, Text, StyleSheet, Dimensions, ScrollView, Animated} from 'react-native'
 import {Provider, Portal, Modal, Button, FAB, Dialog} from 'react-native-paper'
 import CustomHeader from "../../../components/atoms/CustomHeader/CustomHeader";
-import Tours from "../Tours/Tours";
 import Colors from "../../../constants/Colors";
-import AddLocationButton from "../../../components/atoms/AddLocationButton/AddLocationButton";
 import CityWidget from "../../../components/molecules/CityWidget/CityWidget";
 import AddCityModal from "../../../components/molecules/AddCityModal/AddCityModal";
 import Carousel, {Pagination} from "react-native-snap-carousel";
 import SlidingUpPanel from "rn-sliding-up-panel";
 import DialogPanel from "../../../components/atoms/DialogPanel/DialogPanel";
+import WeatherPanel from "../../../components/molecules/WeatherPanel/WeatherPanel";
 
 const {height, width} = Dimensions.get('window')
-
 
 const AddLocations = props => {
 
@@ -24,10 +22,14 @@ const AddLocations = props => {
     const [state, setState] = useState({ open: false });
     const [deleteItem, setDetleteItem] = useState(null)
     const [deleteMessage, setDeleteMessage] = useState('')
+    const [currentTab, setCurrentTab] = useState(0)
+    const [selectedWeather, setSelectedWeather] = useState(null)
 
     const destinationRef = useRef(null)
     const errorPanel = useRef(null)
     const originErrorPanel = useRef(null)
+    const weatherPanel = useRef(null)
+    const firstUpdate = useRef(true);
 
     useEffect(()=> {
         if(deleteItem && deleteItem.type === 'destination'){
@@ -40,6 +42,18 @@ const AddLocations = props => {
             setDeleteMessage('')
         }
     },[deleteItem])
+    useLayoutEffect(()=>{
+        if (firstUpdate.current) {
+            firstUpdate.current = false;
+            return;
+        }
+        else if (selectedWeather === null) {
+
+        }
+        else{
+            showWeatherPanel()
+        }
+    },[selectedWeather])
 
     const onStateChange = ({ open }) => setState({ open });
 
@@ -130,6 +144,35 @@ const AddLocations = props => {
         }
     }
 
+    const onWeatherTabChange = (val) => {
+        setTimeout(function(){
+            weatherPanel.current.show()
+        });
+        setCurrentTab(val)
+    }
+
+    const onWeatherPanelClose = () => {
+        // setTimeout(()=>{
+        //     weatherPanel.current.hide()
+        // })
+        setSelectedWeather(null)
+    }
+
+    const showWeatherPanel = () => {
+        setTimeout(function(){
+            weatherPanel.current.show()
+        });
+    }
+
+    const onWeatherPress = (type, index) => {
+        if(type === 'origin'){
+            setSelectedWeather(origins[index])
+        }
+        else{
+            setSelectedWeather(destinations[index])
+        }
+    }
+
     const _cityItem = ({item, index}, type) => {
         return (
             <CityWidget
@@ -153,6 +196,7 @@ const AddLocations = props => {
                 deleteContainerIconSize={26}
                 onDelete={()=>_onDeleteDialog(type, index)}
                 onMapPress={()=>console.log('map pressed')}
+                onWeatherPress={()=>onWeatherPress(type, index)}
             />
         );
     }
@@ -306,6 +350,19 @@ const AddLocations = props => {
                             onYes={()=>_onDelete()}
                         />
                     </SlidingUpPanel>
+                    {
+                        selectedWeather?
+                            <WeatherPanel
+                                ref={weatherPanel}
+                                currentTab={currentTab}
+                                onChange={(val)=>onWeatherTabChange(val)}
+                                onClose={onWeatherPanelClose}
+                                currentWeather={selectedWeather.weather.current}
+                                dailyWeather={selectedWeather.weather.daily}
+                                place={selectedWeather.place}
+                            />
+                            :null
+                    }
                 </Portal>
         </Provider>
     )

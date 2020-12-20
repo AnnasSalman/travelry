@@ -32,28 +32,10 @@ const tabScreenConfig = {
             tabBarIcon: tabInfo => {
                 return <Ionicons name="md-map" size={25} color={tabInfo.tintColor} />;
             },
-            tabBarColor: Colors.DefaultTheme.primary,
+            tabBarColor: 'rgba(0,0,0,0.0)',
 
         }
     },
-     Bookings: {
-        screen: BookingScreen,
-        navigationOptions: {
-            tabBarIcon: tabInfo => {
-                return <Ionicons name="ios-calendar" size={25} color={tabInfo.tintColor} />;
-            },
-            tabBarColor: Colors.DefaultTheme.primary
-        }
-    },
-    Inbox: {
-        screen: Inbox,
-        navigationOptions: {
-            tabBarIcon: tabInfo => {
-                return <Ionicons name="ios-chatbubbles" size={25} color={tabInfo.tintColor} />;
-            },
-            tabBarColor: 'red'
-        }
-    }
 };
 
 const MainTabNavigation =

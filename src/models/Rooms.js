@@ -1,4 +1,7 @@
 import axios from "axios";
+import {uri} from "../constants/Addresses";
+const baseURI = uri
+
 
 class Room {
     constructor() {
@@ -38,6 +41,11 @@ class Room {
         catch (e) {
             return e
         }
+    }
+
+    async getRoomImages(hotelId, roomId){
+        const pics = await axios.get('/hotels/'+hotelId+'/getimages/'+roomId)
+        return pics.data.map((pic)=>baseURI + '/hotels/room/images/'+pic)
     }
 }
 

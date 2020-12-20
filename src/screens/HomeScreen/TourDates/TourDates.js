@@ -44,7 +44,7 @@ const TourDates = props => {
     }
 
     const _onNext = () => {
-        props.navigation.navigate('plan', {...props.navigation.state.params, dates: Object.keys(state.markedDates)})
+        props.navigation.navigate('hobbies', {...props.navigation.state.params, dates: Object.keys(state.markedDates)})
     }
 
     const onDayPress = (day) => {

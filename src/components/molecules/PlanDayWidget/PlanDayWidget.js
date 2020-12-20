@@ -4,6 +4,7 @@ import PlanRoute from "../../atoms/PlanRoute/PlanRoute";
 import SegmentedControl from '@react-native-community/segmented-control';
 import Colors from "../../../constants/Colors";
 import UnderConstruction from "../../atoms/UnderConstruction/UnderConstruction";
+import TourRoomWidget from "../TourRoomWidget/TourRoomWidget";
 
 
 const PlanDayWidget = props => {
@@ -16,7 +17,7 @@ const PlanDayWidget = props => {
                 Tour Day {props.day}
             </Text>
             <SegmentedControl
-                values={['Route', 'Timeline', 'Bookings']}
+                values={props.bookings?['Route', 'Bookings']:['Route']}
                 selectedIndex={currentTab}
                 fontStyle={{
                     color: Colors.ForestBiome.primary,
@@ -44,8 +45,11 @@ const PlanDayWidget = props => {
                 />:null
             }
             {
-                currentTab===1 || currentTab===2?
-                    <UnderConstruction/>:null
+                currentTab===1?
+                    <TourRoomWidget
+                        bookings={props.bookings}
+                        onBookingPackagesPressed={props.onBookingPackagesPressed}
+                    />:null
             }
         </View>
     )

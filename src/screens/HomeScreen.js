@@ -1,7 +1,8 @@
-import React, {useState, useEffect, useRef} from 'react';
-import ReviewCarousel from "../components/atoms/ReviewCarousel";
-import WeatherPanel from "../components/molecules/WeatherPanel/WeatherPanel";
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import Keys from "../constants/Keys";
+import UserInfo from "../models/UserInfo";
+import SignOutButton from "../components/atoms/SignOutButton/SignOutButton";
 import {
     View,
     Dimensions,
@@ -13,16 +14,63 @@ import {
 import SearchPanel from '../components/molecules/searchPanel/SearchPanel'
 import Colors from "../constants/Colors";
 import Location from "../models/Location";
+import * as Google from 'expo-google-app-auth';
+import { Menu, Provider, Button } from 'react-native-paper';
+import Avatar from "../components/atoms/Avatar/Avatar";
+import GoogleLoginButton from "../components/atoms/GoogleLoginButton/GoogleLoginButton";
+import {useIsFocused} from "react-navigation-hooks";
+
 
 const image = require('../../assets/homeassets/home2.jpg');
 const { width, height } = Dimensions.get('window')
 
 const HomeScreen = props => {
 
+    const isFocused = useIsFocused()
+
     const [loc, setLoc] = useState('')
     const [fullLocation, setfullLocation] = useState(null)
     const [background, setBackground] = useState(image)
     const [reviews, setReviews] = useState([])
+    const [userInfo, setUserInfo] = useState(null)
+    const [loggedIn, setLoggedIn] = useState(false)
+
+
+    const signInWithGoogleAsync = async() => {
+        const userInfo = new UserInfo()
+        try {
+            const result = await Google.logInAsync({
+                iosClientId: Keys.OAuthID,
+                scopes: ['profile', 'email'],
+            });
+
+            if (result.type === 'success') {
+                await userInfo.setUserInfo(result.user)
+                console.log(result.user)
+                setUserInfo(result.user)
+                setLoggedIn(true)
+            } else {
+                console.log('cancelled');
+            }
+        } catch (e) {
+            console.log('error signing in');
+            return { error: true };
+        }
+    }
+
+    const fetchUser = () => {
+        const userInfo = new UserInfo()
+        userInfo.getUserInfo()
+            .then((info)=>{
+                if(info){
+                    setUserInfo(info)
+                    setLoggedIn(true)
+                }
+            })
+            .catch((e)=>{
+                console.log(e)
+            })
+    }
 
     useEffect(()=>{
         const getLocation = async () => {
@@ -53,6 +101,12 @@ const HomeScreen = props => {
         }
         getLocation()
     },[])
+
+    useEffect(()=>{
+        if(isFocused){
+            fetchUser()
+        }
+    },[isFocused])
 
     const onLocationChange = async() => {
         try{
@@ -101,8 +155,19 @@ const HomeScreen = props => {
         }
     }
 
+    const onSignOut = () => {
+        const userInfo = new UserInfo()
+        userInfo.removeUser().then(()=>{
+            setLoggedIn(false)
+            setUserInfo(null)
+        }).catch((e)=>{
+            console.log(e)
+        })
+    }
+
+
         return (
-            <View style={styles.container}>
+            <Provider style={styles.container}>
                 <ImageBackground source={background} style={styles.backgroundImage}>
                     <LinearGradient
                         style={styles.backgroundImage}
@@ -140,17 +205,32 @@ const HomeScreen = props => {
                     </View>
                     </LinearGradient>
                 </ImageBackground>
+                <Avatar
+                    type={loggedIn?'url':'local'}
+                    style={styles.avatar}
+                    placeholder={require('../../assets/placeholders/user.png')}
+                    image={loggedIn?userInfo.photoUrl:'https://assets.stickpng.com/thumbs/585e4beacb11b227491c3399.png'}
+                />
+                {!loggedIn?
+                    <GoogleLoginButton
+                        style={styles.loginButton}
+                        onPress={()=>signInWithGoogleAsync()}
+                    />:
+                    <SignOutButton
+                        style={styles.signoutButton}
+                        onPress={()=>onSignOut()}
+                    />
+                }
                 <SearchPanel
                     searchBarText={loc===''?'Enter a Location':loc}
                     onRoomPress={()=>props.navigation.navigate('room')}
-                    onHotelPress={()=>{
-                        demo.current.show()
-                    }}
-                    onTourPress={()=>props.navigation.navigate('plan')}
+                    onHotelPress={()=>props.navigation.navigate('generalTourInfo')}
+                    onTourPress={()=>props.navigation.navigate('toursScreen') }
+                    // onTourPress={()=>props.navigation.navigate('plan')}
                     onSearchPress={()=>props.navigation.navigate('AddLocation', {onLocationChange: ()=>onLocationChange()})}
                     onPlacePress={()=>props.navigation.navigate('placesScreen')}
                 />
-            </View>
+            </Provider>
         )
 }
 
@@ -165,7 +245,7 @@ const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
         width: width,
-        height: height*0.6
+        height: height*0.59
     },
     messageView: {
         flex: 1,
@@ -173,22 +253,49 @@ const styles = StyleSheet.create({
         fontFamily: 'poppins-medium',
         marginLeft: 20,
         marginBottom: 0,
-        width: width*0.75
+        width: width*0.85
     },
     message: {
-        fontFamily: 'roboto-medium',
+        fontFamily: 'rock-salt',
         color: Colors.DarkTheme.onSurface,
-        fontSize: 24,
-        textShadowColor: Colors.DarkTheme.background,
-        textShadowRadius: 4
-    },
-    messageSmall:{
-        fontFamily: 'poppins-medium',
-        color: 'grey',
-        fontSize: 13,
+        fontSize: 20,
+        fontWeight: 'bold',
         textShadowColor: Colors.DarkTheme.background,
         textShadowRadius: 4,
-    }
+    },
+    messageSmall:{
+        fontFamily: 'poppins-regular',
+        color: '#A9A9A9',
+        fontSize: 10,
+        textShadowColor: Colors.DarkTheme.background,
+        textShadowRadius: 4,
+        width: '65%',
+        marginTop: -10
+    },
+    avatar: {
+        position: 'absolute',
+        top: '4%',
+        right: '3%',
+        borderRadius: 25,
+        width: 45,
+        height: 45
+    },
+    loginButton: {
+        position: 'absolute',
+        top: '4%',
+        left: '3%',
+        height: 45,
+        borderRadius: 25,
+        backgroundColor: Colors.ForestBiome.backgroundVariant
+    },
+    signoutButton: {
+        position: 'absolute',
+        top: '4%',
+        right: '15%',
+        height: 45,
+        borderRadius: 25,
+        backgroundColor: Colors.ForestBiome.backgroundVariant
+    },
 })
 
 export default HomeScreen;

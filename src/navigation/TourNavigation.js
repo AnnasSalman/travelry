@@ -9,13 +9,17 @@ import TourDates from "../screens/HomeScreen/TourDates/TourDates";
 import Plan from "../screens/HomeScreen/Plan/Plan";
 import Hobbies from "../screens/HomeScreen/Hobbies/Hobbies";
 import AvailablePlaces from '../screens/HomeScreen/AvailablePlaces/AvailablePlaces'
+import BookingPackages from "../screens/HomeScreen/BookingPackages/BookingPackages";
+import GeneralTourInfo from "../screens/HomeScreen/GeneralTourInfo/GeneralTourInfo";
+import SaveTour from "../screens/HomeScreen/SaveTour/SaveTour";
+import TourInitialScreen from "../screens/HomeScreen/TourInitialScreen/TourInitialScreen";
 
 const TourNavigation = createStackNavigator({
-        hobbies: {
-            screen: Hobbies
-        },
         toursScreen: {
             screen: Tours
+        },
+        toursInitialScreen: {
+            screen: TourInitialScreen
         },
         tourDemo: {
             screen: TourDemo,
@@ -32,6 +36,12 @@ const TourNavigation = createStackNavigator({
         tourDates: {
             screen: TourDates
         },
+        hobbies: {
+            screen: Hobbies
+        },
+        generalTourInfo: {
+            screen: GeneralTourInfo
+        },
         plan: {
             screen: Plan
         },
@@ -40,7 +50,19 @@ const TourNavigation = createStackNavigator({
             navigationOptions: {
                 ...TransitionPresets.FadeFromBottomAndroid
             }
-        }
+        },
+        bookingPackages: {
+            screen: BookingPackages,
+            navigationOptions: {
+                ...TransitionPresets.FadeFromBottomAndroid
+            }
+        },
+        saveTour: {
+            screen: SaveTour,
+            navigationOptions: {
+                ...TransitionPresets.FadeFromBottomAndroid
+            }
+        },
     },
     {
         defaultNavigationOptions: {

@@ -67,7 +67,7 @@ const HobbiesData = [
     [
         {
             name: 'Museums',
-            key: 'museum',
+            key: 'museums',
             image: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8bXVzZXVtfGVufDB8fDB8&auto=format&fit=crop&w=750&q=60',
             tint: 'rgba(159, 155, 153, 0.8)',
             barColor: 'rgba(159, 155, 153, 1)',

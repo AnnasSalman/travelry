@@ -35,7 +35,7 @@ const PlanStayDayWidget = props => {
                 props.children
             }
             <SegmentedControl
-                values={['Route', 'Timeline']}
+                values={['Route']}
                 selectedIndex={currentTab}
                 fontStyle={{
                     color: Colors.ForestBiome.primary,
@@ -61,10 +61,6 @@ const PlanStayDayWidget = props => {
                         destinationLat={props.destinationLat}
                         destinationLng={props.destinationLng}
                     />:null
-            }
-            {
-                currentTab===1 || currentTab===2?
-                    <UnderConstruction/>:null
             }
         </View>
     )

@@ -24,6 +24,12 @@ const Hobbies = props => {
 
     const [state, setState] = useState({data: []})
 
+    const _onNext = () => {
+        const tourHobbies = state.data.map((hobbyObject)=>hobbyObject.key)
+        console.log(tourHobbies)
+        props.navigation.navigate('generalTourInfo', {...props.navigation.state.params, hobbies: tourHobbies})
+    }
+
     const _onBack = () => {
         props.navigation.goBack()
     }
@@ -32,18 +38,19 @@ const Hobbies = props => {
         const currentHobbies = state.data
         currentHobbies.push(hobby)
         setState({...state, data: currentHobbies})
+        _onPanelHide()
     }
 
     const _onPanelOpen = () => {
         setTimeout(()=>{
             hPanel.current.show()
-        })
+        },200)
     }
 
     const _onPanelHide = () => {
         setTimeout(()=>{
             hPanel.current.hide()
-        })
+        },200)
     }
 
     const onDelete = (index) => {
@@ -97,7 +104,7 @@ const Hobbies = props => {
                             style={styles.fab}
                             label='Continue'
                             icon="check"
-                            onPress={_onPanelOpen}
+                            onPress={_onNext}
                             color={Colors.ForestBiome.background}
                         />
                         :null

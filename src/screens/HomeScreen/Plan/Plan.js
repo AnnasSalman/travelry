@@ -9,6 +9,11 @@ import PlanDayWidget from "../../../components/molecules/PlanDayWidget/PlanDayWi
 import PlanStayDayWidget from "../../../components/molecules/PlanStayDayWidget/PlanStayDayWidget";
 import TourPlanPlaceWidget from "../../../components/atoms/TourPlanPlaceWidget/TourPlanPlaceWidget";
 import tourDemo from "../../../constants/demo";
+import { Fold } from 'react-native-animated-spinkit'
+import Carousel from 'react-native-snap-carousel';
+import { FAB, Portal, Provider } from 'react-native-paper';
+
+const loadingMessages = ['Finding Routes...', 'Calculating Distances...', 'Planning Schedule...', 'Finding the best suited places for you...', 'Generating the best stay packages for you...','Hang on, just a few things left to take care of...']
 
 const {height, width} = Dimensions.get('window')
 
@@ -24,29 +29,38 @@ const getMaxNumber = (availablePlaces) => {
 
 const Plan = props => {
 
-    const [plan, setPlan] = useState(tourDemo)
-    const [planFetched, setPlanFetched] = useState(true)
+    const [plan, setPlan] = useState(null)
+    const [planFetched, setPlanFetched] = useState(false)
+    const [menuOpen, setMenuOpened] = useState(false);
+    const [cities, setCities] = useState(null)
 
-    // useEffect(()=>{
-    //     fetchTourPlan().then().catch()
-    // },[])
+    useEffect(()=>{
+        fetchTourPlan().then().catch()
+    },[])
 
     const fetchTourPlan = async() => {
-        const {locations, dates} = props.navigation.state.params
+        const {locations, dates, fuelType, fuelAverage, guests, budget, hobbies} = props.navigation.state.params
         const coordinates = locations.map((location)=>{
             const {lat, lng} = location.place.geometry.location
             return lat+","+lng
         })
-        const tour = new Tour(coordinates, dates,15000, [])
+        const tour = new Tour(coordinates, dates, budget, hobbies, fuelType, fuelAverage, guests)
         try{
             const plan = await tour.fetchTourPlan()
             setPlan(plan)
             setPlanFetched(true)
+            setCities(locations)
         }
         catch(e){
             console.log(e)
         }
     }
+
+    const _onSaveTour = (type) => {
+        props.navigation.navigate('saveTour', {...plan, public: type==='publish'?true:false, cities})
+    }
+
+    const onMenuChange = ({open}) => setMenuOpened(open);
 
     const _onBack = () => {
         props.navigation.goBack()
@@ -56,12 +70,35 @@ const Plan = props => {
         props.navigation.navigate('availablePlaces', {item: item, highest: getMaxNumber(item.localAvailableLocations), _onNewPlaceSelected})
     }
 
+    const _onBookingPackagePressed = (item) => {
+        props.navigation.navigate('bookingPackages', {item, _onNewPackageSelected})
+    }
+
     const _onNewPlaceSelected = (place, date) => {
         const statePlaces  = plan.dateSchedule[date][0]
         setPlan({...plan, dateSchedule: {...plan.dateSchedule, [date]: [{...statePlaces, localSelectedLocations: place}]   }})
     }
 
+    const _onNewPackageSelected = (date, index) => {
+        const roomArray = plan.dateSchedule[date][0].bookings
+        const temp = plan.dateSchedule[date][0].bookings[index]
+        roomArray.splice(index, 1)
+        roomArray.unshift(temp)
+        setPlan({...plan, dateSchedule: {...plan.dateSchedule, [date]: [{...plan.dateSchedule[date][0], bookings: roomArray}]}})
+    }
+
+    const _renderLoadingItem = ({item, index}) => {
+        return (
+            <View style={{
+                alignItems: 'center'}}>
+                <Text style={styles.loadingText}>{ item }</Text>
+            </View>
+        );
+    }
+
     return(
+    <Provider>
+        <Portal>
         <View style={styles.container}>
             <CustomHeader
                 text='Tour Plan'
@@ -76,7 +113,7 @@ const Plan = props => {
                     <Agenda
                         items={plan.dateSchedule}
                         loadItemsForMonth={()=>{}}
-                        selected={new Date()}
+                        selected={Object.keys(plan.dateSchedule)[0]}
                         renderItem={(item)=>{
                             if(item.locationstoVisit.length>1){
                                 let originName = item.locationstoVisit[0].name.split(', ')
@@ -99,6 +136,9 @@ const Plan = props => {
                                         originLng={item.locationstoVisit[0].geometry.coordinates.lng}
                                         destinationLat={item.locationstoVisit[item.locationstoVisit.length-1].geometry.coordinates.lat}
                                         destinationLng={item.locationstoVisit[item.locationstoVisit.length-1].geometry.coordinates.lng}
+                                        bookings={item.bookings?item.bookings:null}
+                                        onBookingPackagesPressed={()=>_onBookingPackagePressed(item)}
+                                        selectedPackageIndex={0}
                                     />
                                 )
                             }
@@ -162,11 +202,55 @@ const Plan = props => {
                         // monthFormat={'yyyy'}
                         // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
                         //renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
-                        // hideExtraDays={false}
+                        hideExtraDays={true}
                     />
-                    :null
+                    :
+                    <View style={styles.loadingView}>
+                        <Fold color={Colors.ForestBiome.primary} size={70}/>
+                        <View style={styles.carouselContainer}>
+                            <Carousel
+                                contentContainerCustomStyle={{justifyContent: 'center', alignItems: 'center'}}
+                                data={loadingMessages}
+                                renderItem={_renderLoadingItem}
+                                sliderWidth={300}
+                                itemWidth={300}
+                                autoplay={true}
+                                autoplayInterval={2000}
+                                scrollEnabled={false}
+                            />
+                        </View>
+                    </View>
             }
-        </View>
+            </View>
+            {
+                planFetched?
+                <FAB.Group
+                style={styles.fab}
+                fabStyle={styles.fabButton}
+                open={menuOpen}
+                icon={menuOpen ? 'content-save-settings' : 'dots-vertical'}
+                actions={[
+                    {
+                        icon: 'cloud-upload',
+                        label: 'Publish Tour',
+                        onPress: () => _onSaveTour('publish'),
+                    },
+                    {
+                        icon: 'content-save-move',
+                        label: 'Save Tour',
+                        onPress: () => _onSaveTour('save'),
+                    },
+                ]}
+                onStateChange={onMenuChange}
+                onPress={() => {
+                    if (menuOpen) {
+                        // do something if the speed dial is open
+                    }
+                }}
+            />:null
+            }
+        </Portal>
+    </Provider>
     )
 }
 
@@ -176,6 +260,15 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingBottom: 50,
         paddingTop: 25,
+    },
+    loadingView: {
+        width: '100%',
+        height: '75%',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    carouselContainer: {
+        height: 80,
     },
     headerText: {
         color: 'white'
@@ -215,6 +308,19 @@ const styles = StyleSheet.create({
         width: '85%',
         marginLeft: 25,
         marginVertical: '4%'
+    },
+    loadingText: {
+        color: Colors.ForestBiome.primary,
+        fontFamily: 'poppins-medium',
+        fontSize: 16,
+        textAlign: 'center'
+    },
+    fab: {
+        position: 'absolute',
+        bottom: 50,
+    },
+    fabButton: {
+        backgroundColor: Colors.ForestBiome.primary
     }
 })
 

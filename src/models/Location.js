@@ -18,7 +18,7 @@ const bestHeight = (elements) => {
 const randomImage = (elements) => {
     const images = []
     elements.forEach((image, index)=>{
-        if(image.height>650){
+        if(image.height>950){
             images.push(index)
         }
     })
@@ -49,8 +49,9 @@ class Location {
                     method: 'get',
                     params:{
                         key: Keys.mapsKey,
-                        photoreference: value.photos[bestIndex].photo_reference,
-                        maxwidth: 750
+                        // photoreference: value.photos[bestIndex].photo_reference,
+                        photoreference: value.photos[0].photo_reference,
+                        maxwidth: 1000
                     }
                 })
                 await AsyncStorage.setItem('backgroundImage', pic.request.responseURL)

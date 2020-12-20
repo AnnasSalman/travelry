@@ -20,7 +20,8 @@ const fetchFonts = async() => {
          'roboto-medium': require('./assets/fonts/Roboto/Roboto-Medium.ttf'),
          'roboto-regular': require('./assets/fonts/Roboto/Roboto-Regular.ttf'),
           'poppins-regular': require('./assets/fonts/Poppins/Poppins-Regular.ttf'),
-          'poppins-medium': require('./assets/fonts/Poppins/Poppins-Medium.ttf')
+          'poppins-medium': require('./assets/fonts/Poppins/Poppins-Medium.ttf'),
+          'rock-salt': require('./assets/fonts/RockSalt/RockSalt-Regular.ttf')
       }
   )
 }

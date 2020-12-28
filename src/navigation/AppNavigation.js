@@ -8,6 +8,7 @@ import AddLocationModal from "../components/molecules/AddLocationModal/AddLocati
 import PlacesNavigation from "./PlacesNavigation";
 
 import Colors from '../constants/Colors'
+import HotelNavigation from "./HotelNavigation";
 
 const AppNavigator = createStackNavigator({
     Home: {
@@ -21,6 +22,9 @@ const AppNavigator = createStackNavigator({
     },
     Place:{
         screen: PlacesNavigation
+    },
+    Hotel:{
+        screen: HotelNavigation
     },
     AddLocation: {
         screen: AddLocationModal,

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 import {IconButton} from 'react-native-paper'
 import TourRoomCard from "../../atoms/TourRoomCard/TourRoomCard";
@@ -11,6 +11,7 @@ const TourRoomWidget = props => {
 
     const [packages, setPackages] = useState(props.bookings)
     const [selectedPackageIndex, setSelectedPackageIndex] = useState(0)
+
 
     const normalizeBookingsDuplicates = (bookings) =>{
         const normalizedArray = []

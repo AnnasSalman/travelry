@@ -60,6 +60,8 @@ const PlanStayDayWidget = props => {
                         originLng={props.originLng}
                         destinationLat={props.destinationLat}
                         destinationLng={props.destinationLng}
+                        onDirections={props.onDirections}
+                        onDistanceChange={props.onDistanceChange}
                     />:null
             }
         </View>

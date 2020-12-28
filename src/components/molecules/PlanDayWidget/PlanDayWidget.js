@@ -42,6 +42,7 @@ const PlanDayWidget = props => {
                 originLng={props.originLng}
                 destinationLat={props.destinationLat}
                 destinationLng={props.destinationLng}
+                onDirections={props.onDirections}
                 />:null
             }
             {

@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react"
 import {View, Text, StyleSheet, Dimensions} from 'react-native'
 import {IconButton} from "react-native-paper";
 import MapView, {Marker, Circle, PROVIDER_GOOGLE, Callout} from "react-native-maps";
@@ -55,7 +55,12 @@ const PlanRoute = props => {
             distance: stats.distance,
             duration: stats.duration
         })
+        if(props.onDistanceChange){
+            props.onDistanceChange(stats.distance)
+        }
     }
+
+
 
     return(
         <View style={styles.container}>
@@ -109,6 +114,7 @@ const PlanRoute = props => {
                     color={Colors.ForestBiome.primary}
                     size={38}
                     style={{flex: 0.5}}
+                    onPress={props.onDirections}
                 />
                 <View style={styles.divider}/>
                 <View style={styles.statBox}>

@@ -10,8 +10,6 @@ import SegmentedControl from '@react-native-community/segmented-control';
 import Loading from "../../../components/atoms/Loading/Loading";
 import {showLocation} from "react-native-map-link";
 
-
-
 const {height, width} = Dimensions.get('window')
 
 const _renderItem = ({item, index}) => {

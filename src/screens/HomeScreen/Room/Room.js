@@ -35,6 +35,8 @@ const Room = props => {
         setfilters(props.navigation.state.params.filter)
     },[])
 
+    console.log(roomState)
+
     const carouselItem = ({item, index}) => {
 
         return(
@@ -161,7 +163,6 @@ const Room = props => {
                     style={styles.button}
                     color={Colors.ForestBiome.primary}
                     onPress={()=>props.navigation.navigate('booking',{filters, room:roomState})}
-
                 >
                     Reserve Room
                 </Button>
@@ -169,6 +170,7 @@ const Room = props => {
         </View>
     )
 }
+
 
 Room.navigationOptions = ({navigation}) => {
     return {

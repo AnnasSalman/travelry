@@ -224,7 +224,7 @@ const HomeScreen = props => {
                 <SearchPanel
                     searchBarText={loc===''?'Enter a Location':loc}
                     onRoomPress={()=>props.navigation.navigate('room')}
-                    onHotelPress={()=>props.navigation.navigate('generalTourInfo')}
+                    onHotelPress={()=>props.navigation.navigate('hotelsScreen')}
                     onTourPress={()=>props.navigation.navigate('toursScreen') }
                     // onTourPress={()=>props.navigation.navigate('plan')}
                     onSearchPress={()=>props.navigation.navigate('AddLocation', {onLocationChange: ()=>onLocationChange()})}

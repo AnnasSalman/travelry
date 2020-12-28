@@ -26,12 +26,11 @@ const Rooms = props => {
     const [filterApplied, setfilterApplied] = useState(false)
     const [loading, setloading] = useState(false)
     const [filter, setfilter] = useState({})
+    const [dataFetched, setDataFetched] = useState(false)
     const [animatedValue] = useState(new Animated.Value(0));
 
     useEffect(()=>{
-        setloading(true)
         onFilterApply({guests: 1, startDate: today, endDate: tomorrow, from: 0, to: 100000})
-        setloading(false)
     },[])
     useEffect(()=>{
         if(filterApplied){
@@ -43,8 +42,8 @@ const Rooms = props => {
     },[filter])
 
     const onFilterApply = async ({guests, startDate, endDate, from, to}) => {
-        setfilter({guests, startDate, endDate, from, to})
         setloading(true)
+        setfilter({guests, startDate, endDate, from, to})
         const rooms = new Room()
         try{
             const roomsResponse = await rooms.requestRooms(guests, from, to, startDate, endDate)
@@ -100,6 +99,20 @@ const Rooms = props => {
                     )}
                     keyExtractor={item => item.roomInfo.key}
                 />}
+                {
+                    (!loading && roomState.length===0)?
+                        <View style={styles.errorContainer}>
+                            <IconButton
+                                color={Colors.ForestBiome.primary}
+                                icon={'bed-empty'}
+                                size={80}
+                            >
+
+                            </IconButton>
+                            <Text style={styles.errorText}>Couldn't find any room close to you</Text>
+                            <Text style={styles.errorText}>Try another location maybe?</Text>
+                        </View>:null
+                }
             </View>
             <View style={styles.bottomBar}>
 
@@ -178,6 +191,17 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.ForestBiome.background,
         borderBottomRightRadius: 25,
         borderBottomLeftRadius: 25
+    },
+    errorContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        width: '100%',
+        paddingBottom: 150
+    },
+    errorText: {
+        color: Colors.ForestBiome.primary,
+        fontFamily: 'poppins-medium'
     }
 })
 

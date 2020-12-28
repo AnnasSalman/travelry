@@ -11,10 +11,13 @@ import GoogleLoginButton from "../components/atoms/GoogleLoginButton/GoogleLogin
 import * as Google from "expo-google-app-auth";
 import Keys from "../constants/Keys";
 import Loading from "../components/atoms/Loading/Loading";
+import {useIsFocused} from "react-navigation-hooks";
 
 const {height, width} = Dimensions.get('window')
 
 const MyToursScreen = props => {
+
+    const isFocused = useIsFocused()
 
     const [currentTab, setCurrentTab] = useState(0)
     const [published, setPublished] = useState([])
@@ -23,11 +26,15 @@ const MyToursScreen = props => {
     const [loggedIn, setLoggedIn] = useState(false)
     const [loading, setLoading] = useState(true)
 
+    const _onViewTour = (item) => {
+        props.navigation.navigate('toursInitialScreen', {item})
+    }
+
     useEffect(()=>{
         setLoading(true)
         fetchTours()
         setLoading(false)
-    },[loggedIn])
+    },[loggedIn, isFocused])
 
     const signInWithGoogleAsync = async() => {
         const userInfo = new UserInfo()
@@ -59,7 +66,9 @@ const MyToursScreen = props => {
                 id = user.id
             }
             else{
-                return
+                setFetched(false)
+                setLoggedIn(false)
+                setSaved([])
             }
         }
         catch(e){
@@ -89,6 +98,7 @@ const MyToursScreen = props => {
             user={item.user}
             time={item.time}
             ratings={item.ratings}
+            onViewTour={()=>_onViewTour(item)}
         />
     );
 

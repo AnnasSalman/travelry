@@ -10,10 +10,12 @@ import Keys from "../../../constants/Keys";
 import Carousel from 'react-native-snap-carousel';
 import Tour from "../../../models/Tour";
 import TourCard from "../../../components/atoms/TourCard/TourCard";
+import {useIsFocused} from "react-navigation-hooks";
 
 const {height, width} = Dimensions.get('window')
 
 const Tours = props => {
+    const isFocused = useIsFocused()
 
     const [highlyRatedTours, setHighlyRatedTours] = useState([])
     const [highlyRatedFetched, setHighlyRatedFetched] = useState(false)
@@ -22,11 +24,11 @@ const Tours = props => {
 
     useEffect(()=>{
         fetchTours('rating')
-    },[])
+    },[isFocused])
 
     useEffect(()=>{
         fetchTours('nearby')
-    },[])
+    },[isFocused])
 
     const fetchTours = async(type) => {
         const tour = new Tour()

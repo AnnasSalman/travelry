@@ -1,5 +1,6 @@
 import axios from "axios";
 import {uri} from "../constants/Addresses";
+import Location from "./Location";
 const baseURI = uri
 
 
@@ -10,6 +11,8 @@ class Room {
     }
     async requestRooms(guests, from, to, startDate, endDate) {
         try{
+            const location = new Location()
+            const myLocation = await location.getLocation()
             const roomsRes = await axios.get('/bookings/findrooms',
                 {
                     params: {
@@ -17,7 +20,9 @@ class Room {
                         lower: from,
                         upper: to,
                         from: startDate,
-                        to: endDate
+                        to: endDate,
+                        lat: myLocation.geometry.location.lat,
+                        lng: myLocation.geometry.location.lng
                     }
                 })
             this.rooms = (roomsRes.data)
@@ -46,6 +51,11 @@ class Room {
     async getRoomImages(hotelId, roomId){
         const pics = await axios.get('/hotels/'+hotelId+'/getimages/'+roomId)
         return pics.data.map((pic)=>baseURI + '/hotels/room/images/'+pic)
+    }
+
+    async getSimpleRoomImages(hotelId, roomId){
+        const pics = await axios.get('/hotels/'+hotelId+'/getimages/'+roomId)
+        return pics.data
     }
 }
 

@@ -77,6 +77,36 @@ class Tour {
         })
         return fetchedTours.data
     }
+
+    getTourById = async(id) => {
+        const fetchedTours = await axios.request({
+            url: '/tours/gettourbyid/'+id,
+            method: 'get',
+        })
+        return fetchedTours.data
+    }
+
+    rateTour = async(id, rating) => {
+        const fetchedTourStatus = await axios.request({
+            url: '/tours/ratetour/'+id,
+            method: 'post',
+            data: {
+                rating
+            }
+        })
+        return fetchedTourStatus.status
+    }
+
+    updateTourRating = async(id, rating) => {
+        const fetchedTourStatus = await axios.request({
+            url: '/tours/updateTourRating/'+id,
+            method: 'post',
+            data: {
+                rating
+            }
+        })
+        return fetchedTourStatus.status
+    }
 }
 
 export default Tour

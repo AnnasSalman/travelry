@@ -13,6 +13,7 @@ import BookingPackages from "../screens/HomeScreen/BookingPackages/BookingPackag
 import GeneralTourInfo from "../screens/HomeScreen/GeneralTourInfo/GeneralTourInfo";
 import SaveTour from "../screens/HomeScreen/SaveTour/SaveTour";
 import TourInitialScreen from "../screens/HomeScreen/TourInitialScreen/TourInitialScreen";
+import TourSettings from "../screens/HomeScreen/TourSettings/TourSettings";
 
 const TourNavigation = createStackNavigator({
         toursScreen: {
@@ -59,6 +60,12 @@ const TourNavigation = createStackNavigator({
         },
         saveTour: {
             screen: SaveTour,
+            navigationOptions: {
+                ...TransitionPresets.FadeFromBottomAndroid
+            }
+        },
+        tourSettings: {
+            screen: TourSettings,
             navigationOptions: {
                 ...TransitionPresets.FadeFromBottomAndroid
             }
